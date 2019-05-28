@@ -1,0 +1,39 @@
+## PROD LB ETH SERVICE
+##
+## ONLY USE THIS IF YOU WANT TO EXPOSE
+## JSON SERVICES TO A PUBLIC IP
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-eth-prod-1
+spec:
+# match the SERVICE
+  type: LoadBalancer
+  selector:
+#    chain: eth
+    app: eth-prod-app-1
+  ports:
+  - protocol: TCP
+    port: 8546
+    targetPort: 8546
+    port: 8545
+    targetPort: 8545
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-eth-prod-2
+spec:
+# match the SERVICE
+  type: LoadBalancer
+  selector:
+#    chain: eth
+    app: eth-prod-app-2
+  ports:
+  - protocol: TCP
+    port: 8546
+    targetPort: 8546
+    port: 8545
+    targetPort: 8545
+---
+    
