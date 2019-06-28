@@ -1,0 +1,6 @@
+resources:
+- ilb.yaml
+- lb.yaml
+- service.yaml
+- statefulset.yaml
+- storage.yaml

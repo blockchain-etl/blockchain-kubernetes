@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eth-prod-ss-2 # Statefulset Name
+spec:
+  selector:
+    matchLabels:
+      app: eth-prod-app-2 # has to match .spec.template.metadata.labels
+  serviceName: "eth-prod-ss-2"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: eth-prod-app-2 # pod templates label selector has to match .spec.selector.matchLabels
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                - us-central1-c
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: parity
+        image: gcr.io/crypto-etl-clients/parity:v2.3.2 # requires security patch update
+        resources:
+          requests:
+            cpu: "2800m"
+            memory: "10000Mi" # was 11000
+          limits:
+            cpu: "3000m"
+            memory: "12000Mi" # was 12000
+        command: ["./entrypoint.sh"]
+        args: ["--jsonrpc-interface=all", "--jsonrpc-apis=all", "--jsonrpc-port=8545", "--tracing=on", "--base-path=/data", "--cache-size=10000", "--scale-verifiers", "-l info", "--pruning=archive", "--db-compaction=ssd", "--max-peers=300", "--min-peers=250"]
+        ports:
+        - containerPort: 8545
+          name: web-socket
+        - containerPort: 8546
+          name: jsonrpc
+        - containerPort: 30303
+          protocol: UDP
+        volumeMounts:
+        - name: eth-prod-mount-2
+          mountPath: /data
+      initContainers:
+      - name: setup
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /data"]
+        volumeMounts:
+        - name: eth-prod-mount-2
+          mountPath: /data
+      volumes:
+        - name: eth-prod-mount-2
+          persistentVolumeClaim:
+            claimName: eth-regional-pvc-2

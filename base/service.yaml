@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eth-prod
+  labels:
+    chain: eth
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8545
+    name: web-socket
+  - port: 8546
+    name: jsonrpc
+  - port: 30303
+    name: udp
+    protocol: UDP

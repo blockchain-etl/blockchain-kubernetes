@@ -1,0 +1,27 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: eth-regional-pvc
+spec:
+# We leave storageClassName empty so that default storage class is not used
+  storageClassName: ""
+  volumeName: eth-regional-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5000G
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: eth-regional-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 5000G
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: eth-region-bc-pdd
+    fsType: ext4

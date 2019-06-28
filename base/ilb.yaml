@@ -1,0 +1,17 @@
+# use this to aggregate internal pods behind
+# a single load balanced IP
+apiVersion: v1
+kind: Service
+metadata:
+  name: ilb-eth-prod
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.21.1.10 # eth-chain has a dedicated subnet, 10.21.1.0/24
+  ports:
+  - protocol: TCP
+    port: 8546
+    targetPort: 8546
+    port: 8545
+    targetPort: 8545
