@@ -13,5 +13,3 @@ spec:
     targetPort: 8546
     port: 8545
     targetPort: 8545
-
-    
