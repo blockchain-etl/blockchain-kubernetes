@@ -3,4 +3,4 @@ kind: StatefulSet
 metadata:
   name: eth-ss
 spec:
-  serviceName: "eth-prod-ss-2"
+  serviceName: "eth-ss-prod-2"
