@@ -8,7 +8,6 @@ metadata:
     cloud.google.com/load-balancer-type: "Internal"
 spec:
   type: LoadBalancer
-  loadBalancerIP: 10.21.1.10 # eth-chain has a dedicated subnet, 10.21.1.0/24
   ports:
   - protocol: TCP
     port: 8546
