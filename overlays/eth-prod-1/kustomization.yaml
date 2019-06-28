@@ -1,6 +1,6 @@
-nameSuffix: "-1"
+nameSuffix: "-prod-1"
 commonLabels:
-  app: eth-prod-app-1
+  app: eth-app-prod-1
 bases:
 - ../../base
 patchesStrategicMerge:

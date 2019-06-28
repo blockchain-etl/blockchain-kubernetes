@@ -59,9 +59,9 @@ data:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: eth-prod-ss
+  name: eth-ss
 spec:
-  serviceName: "eth-prod-ss-1"
+  serviceName: "eth-ss-1"
   replicas: 1 # by default is 1
   template:
     spec:
@@ -97,19 +97,19 @@ spec:
         volumeMounts:
         - name: parity-config
           mountPath: /config
-        - name: eth-prod-mount
+        - name: eth-mount
           mountPath: /data
       initContainers:
       - name: setup
         image: busybox
         command: ["sh", "-c", "chown -R 1000:1000 /data"]
         volumeMounts:
-        - name: eth-prod-mount
+        - name: eth-mount
           mountPath: /data
       volumes:
         - name: parity-config
           configMap:
             name: parity-config 
-        - name: eth-prod-mount
+        - name: eth-mount
           persistentVolumeClaim:
             claimName: eth-regional-pvc
