@@ -1,0 +1,51 @@
+# Default values for bitcoind.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+terminationGracePeriodSeconds: 30
+image:
+  repository: arilot/docker-bitcoind
+  tag: 0.17.1
+  pullPolicy: IfNotPresent
+
+service:
+  rpcPortName: &rpcPortName jsonrpc
+  rpcPort: &rpcPort 8332
+  p2pPort: &p2pPort 8333
+  p2pPortName: &p2pPortName p2p
+  ports:
+    - name: *rpcPortName
+      port: *rpcPort
+      targetPort: *rpcPortName
+    - name: *p2pPortName
+      port: *p2pPort
+      targetPort: *p2pPortName
+
+externalLB: false
+internalLB: false
+
+
+
+persistence:
+  enabled: true
+  storageClass: "default"
+  accessMode: ReadWriteOnce
+  size: "100Gi"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: "2800m"
+    memory: "10000Mi"
+  limits:
+    cpu: "3000m"
+    memory: "12000Mi"
+
+# Custom bitcoind configuration file used to override default bitcoind settings
+configurationFile:
+  bitcoin.conf: |-
+    server=1
+    printtoconsole=1
+    rpcuser=rpcuser
+    rpcpassword=rpcpassword
