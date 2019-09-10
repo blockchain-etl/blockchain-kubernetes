@@ -1,0 +1,51 @@
+[parity]
+# Parity continously syncs the chain
+mode = "active"
+# Stable
+release_track = "stable"
+
+# Blockchain and settings will be stored in /data.
+base_path = "{{ .Values.parity.base_path }}"
+
+[network]
+# Parity will sync by downloading latest state first. Node will be operational in couple minutes.
+warp = false
+# Parity will try to maintain connection to at least 250 peers.
+min_peers = 250
+# Parity will maintain at most 300 peers.
+max_peers = 300
+
+[rpc]
+#  JSON-RPC will be listening for connections on IP all.
+interface = "all"
+# Only selected APIs will be exposed over this interface.
+apis = ["eth", "pubsub", "net", "parity", "private", "parity_pubsub", "traces", "rpc", "shh", "shh_pubsub", "web3"]
+# Threads for handling incoming connections for HTTP JSON-RPC server.
+server_threads = 6
+# Turn on additional processing threads for JSON-RPC servers (all transports). Setting this to a non-zero value allows parallel execution of cpu-heavy queries.
+processing_threads = 7
+
+[websockets]
+# UI won't work and WebSockets server will be not available.
+disable = true
+
+[footprint]
+# Compute and Store tracing data. (Enables trace_* APIs).
+tracing = "on"
+# Increase performance on SSD.
+db_compaction = "ssd"
+# Keep all state trie data. No pruning.
+pruning = "archive"
+# Number of threads will vary depending on the workload. Not guaranteed to be faster.
+scale_verifiers = true
+# Will keep up to 1000MB data in Database cache.
+cache_size_db = 1000
+
+[snapshots]
+disable_periodic = false
+
+[misc]
+# Logging pattern (`<module>=<level>`, e.g. `own_tx=trace`).
+logging = "info"
+log_file = "/data/parity.log"
+color = true

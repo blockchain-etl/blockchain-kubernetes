@@ -1,0 +1,19 @@
+{{ if .Values.internalLB }}
+# use this to aggregate internal pods behind
+# a single load balanced IP
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-ilb
+  labels:
+{{ include "parity.labels" . | indent 4 }}
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+spec:
+  type: LoadBalancer
+  ports:
+  {{- toYaml .Values.service.ports | nindent 4 }}
+  selector:
+    app.kubernetes.io/name: {{ include "parity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}

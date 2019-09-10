@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "parity.fullname" . }}
+  labels:
+{{ include "parity.labels" . | indent 4 }}
+spec:
+  serviceName: "{{ .Release.Name }}-service"
+  replicas: {{ .Values.replicaCount }} # by default is 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "parity.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "parity.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["--config=/config/parity.toml"]
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        ports:
+          {{- range $val := .Values.service.ports }}
+        - containerPort: {{ $val.port }}
+          name: "{{ $val.name }}"
+          protocol: {{ $val.protocol | default "TCP" }}
+          {{- end }}
+        volumeMounts:
+        - name: parity-config
+          mountPath: /config
+        - name: scripts
+          mountPath: /scripts
+        - name: eth-mount
+          mountPath: /data
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - /scripts/check_node_health.sh
+            - http://127.0.0.1:{{ .Values.service.rpcPort }}
+            - "300"
+            - last_synced_block.txt
+          initialDelaySeconds: 300
+          periodSeconds: 300
+          timeoutSeconds: 10
+          failureThreshold: 2
+      initContainers:
+      - name: setup
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 {{ .Values.parity.base_path }}"]
+        volumeMounts:
+        - name: parity-pvc
+          mountPath: {{ .Values.parity.base_path }}
+      volumes:
+        - name: parity-config
+          configMap:
+            name: "{{ .Release.Name }}-config"
+        - name: scripts
+          configMap:
+            name: "{{ .Release.Name }}-scripts"
+  volumeClaimTemplates:
+    - metadata:
+        name: parity-pvc
+      spec:
+        accessModes:
+        - {{.Values.persistence.accessMode }}
+        storageClassName: {{ .Values.persistence.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+        volumeMode: Filesystem
