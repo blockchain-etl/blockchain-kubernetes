@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-svc
+  labels:
+{{ include "bitcoind.labels" . | indent 4 }}
+spec:
+  ports:
+  {{- toYaml .Values.service.ports | nindent 4 }}
+  selector:
+    app.kubernetes.io/name: {{ include "bitcoind.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

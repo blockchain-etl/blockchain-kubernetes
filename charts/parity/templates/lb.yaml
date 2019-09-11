@@ -1,0 +1,18 @@
+{{ if .Values.externalLB }}
+## ONLY USE THIS IF YOU WANT TO EXPOSE
+## JSON SERVICES TO A PUBLIC IP
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-lb
+  labels:
+{{ include "parity.labels" . | indent 4 }}
+spec:
+# match the SERVICE
+  type: LoadBalancer
+  ports:
+  {{- toYaml .Values.service.ports | nindent 4 }}
+  selector:
+    app.kubernetes.io/name: {{ include "parity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}
