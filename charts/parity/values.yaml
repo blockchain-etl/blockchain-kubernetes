@@ -41,7 +41,7 @@ internalLB: false
 
 persistence:
   enabled: true
-  storageClass: "default"
+#  storageClass: "standard"
   accessMode: ReadWriteOnce
   size: "100Gi"
 
