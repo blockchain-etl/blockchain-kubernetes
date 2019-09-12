@@ -37,6 +37,12 @@ service:
       protocol: *p2pPortProtocol
 
 externalLB: false
+externalLBSourceRanges: {}
+#  - 127.0.0.1/32
+#  - 127.0.0.2/32
+
+externalLBp2p: false
+externalLBp2pIP: 1.1.1.1
 internalLB: false
 
 persistence:
