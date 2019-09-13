@@ -24,17 +24,23 @@ service:
   rpcPort: &rpcPort 8545
   wsPort: &wsPort 8546
   wsPortName: &wsPortName web-socket
-  p2pPort: &p2pPort 30303
-  p2pPortName: &p2pPortName udp
-  p2pPortProtocol: &p2pPortProtocol UDP
+  p2pPort0: &p2pPort0 30303
+  p2pPortName0: &p2pPortName0 p2p
+  p2pPortProtocol0: &p2pPortProtocol0 TCP
+  p2pPort1: &p2pPort1 30303
+  p2pPortName1: &p2pPortName1 p2p-discovery
+  p2pPortProtocol1: &p2pPortProtocol1 UDP
   ports:
     - port: *rpcPort
       name: *rpcPortName
     - port: *wsPort
       name: *wsPortName
-    - port: *p2pPort
-      name: *p2pPortName
-      protocol: *p2pPortProtocol
+    - port: *p2pPort0
+      name: *p2pPortName0
+      protocol: *p2pPortProtocol0
+    - port: *p2pPort1
+      name: *p2pPortName1
+      protocol: *p2pPortProtocol1
 
 externalLB: false
 externalLBSourceRanges: {}
@@ -43,6 +49,10 @@ externalLBSourceRanges: {}
 
 externalLBp2p: false
 externalLBp2pIP: 1.1.1.1
+
+externalLBp2pDiscovery: false
+externalLBp2pDiscoveryIP: 1.1.1.1
+
 internalLB: false
 
 persistence:

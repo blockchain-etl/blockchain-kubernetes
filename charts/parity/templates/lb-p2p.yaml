@@ -1,6 +1,5 @@
 {{ if .Values.externalLBp2p }}
-## ONLY USE THIS IF YOU WANT TO EXPOSE
-## JSON SERVICES TO A PUBLIC IP
+## use this if you want to expose blockchain p2p (not RPC) to public
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,10 +13,11 @@ spec:
   loadBalancerIP: {{ .Values.externalLBp2pIP }}
   {{ end }}
   ports:
-    - name: {{ .Values.service.p2pPortName }}
-      port: {{ .Values.service.p2pPort }}
-      targetPort: {{ .Values.service.p2pPortName }}
+    - name: {{ .Values.service.p2pPortName0 }}
+      port: {{ .Values.service.p2pPort0 }}
+      targetPort: {{ .Values.service.p2pPortName0 }}
+      protocol: {{ .Values.service.p2pPortProtocol0 }}
   selector:
     app.kubernetes.io/name: {{ include "parity.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  {{ end }}
+{{ end }}
