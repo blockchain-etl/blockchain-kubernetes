@@ -21,15 +21,20 @@ service:
       targetPort: *p2pPortName
 
 externalLB: false
-internalLB: false
+externalLBSourceRanges: {}
+#  - 127.0.0.1/32
+#  - 127.0.0.2/32
 
+externalLBp2p: false
+externalLBp2pIP: 1.1.1.1
+internalLB: false
 
 
 persistence:
   enabled: true
-  storageClass: "default"
+#  storageClass: "default"
   accessMode: ReadWriteOnce
-  size: "100Gi"
+  size: "500Gi"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -49,3 +54,6 @@ configurationFile:
     printtoconsole=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
+    rpcbind=0.0.0.0
+    txindex=1
+    # externalip=1.1.1.1

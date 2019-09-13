@@ -10,6 +10,12 @@ metadata:
 spec:
 # match the SERVICE
   type: LoadBalancer
+  {{- if .Values.externalLBSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $val := .Values.externalLBSourceRanges }}
+    - {{ $val -}}
+    {{ end }}
+  {{ end }}
   ports:
   {{- toYaml .Values.service.ports | nindent 4 }}
   selector:
