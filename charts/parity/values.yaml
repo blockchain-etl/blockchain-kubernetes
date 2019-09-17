@@ -17,6 +17,7 @@ fullnameOverride: ""
 # Don't use spaces or special chars
 parity:
   base_path: "/data"
+  cache_size: 4096
 
 service:
   type: ClusterIP
