@@ -18,7 +18,9 @@ configurationFile:
     rpcuser=rpcuser
     rpcpassword=rpcpassword
     rpcbind=0.0.0.0
+    rpcallowip=::/0
     txindex=1
+    disablewallet=1
     externalip=198.51.100.0
 
 externalLBp2p: true
