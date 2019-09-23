@@ -17,7 +17,15 @@ fullnameOverride: ""
 # Don't use spaces or special chars
 parity:
   base_path: "/data"
-  cache_size: 4096
+  footprint:
+    cache_size_db: 4096
+    cache_size_blocks: 200
+    cache_size_queue: 200
+    cache_size_state: 250
+    cache_size: 6144
+  network:
+    min_peers: 250
+    max_peers: 300
 
 service:
   type: ClusterIP
