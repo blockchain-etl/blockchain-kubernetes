@@ -55,7 +55,7 @@ spec:
           emptyDir: {}
         - name: configmap
           configMap:
-            name: {{ template "bitcoind.fullname" . }}
+            name: "{{ .Release.Name }}-config"
         {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}
