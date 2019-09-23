@@ -1,0 +1,25 @@
+image:
+  repository: arilot/docker-bitcoind
+  tag: latest
+  pullPolicy: Always
+
+resources:
+  requests:
+    cpu: "2500m"
+    memory: "6000Mi"
+  limits:
+    cpu: "3500m"
+    memory: "12000Mi"
+
+configurationFile:
+  bitcoin.conf: |-
+    server=1
+    printtoconsole=1
+    rpcuser=rpcuser
+    rpcpassword=rpcpassword
+    rpcbind=0.0.0.0
+    txindex=1
+    externalip=198.51.100.0
+
+externalLBp2p: true
+externalLBp2pIP: 198.51.100.0

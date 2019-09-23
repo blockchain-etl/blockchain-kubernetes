@@ -1,0 +1,33 @@
+image:
+  repository: parity/parity
+  tag: v2.5.8-stable
+  pullPolicy: IfNotPresent
+
+parity:
+  footprint:
+    cache_size_db: 6144
+    cache_size_blocks: 1024
+    cache_size_queue: 100
+    cache_size_state: 1024
+    cache_size: 8192
+  network:
+    min_peers: 250
+    max_peers: 300
+
+resources:
+  requests:
+    cpu: "2000m"
+    memory: "12000Mi"
+  limits:
+    cpu: "3500m"
+    memory: "15000Mi"
+
+externalLBp2p: true
+externalLBp2pIP: 203.0.113.0
+externalLBp2pDiscovery: true
+externalLBp2pDiscoveryIP: 203.0.113.0
+
+persistence:
+  enabled: true
+  storageClass: "ssd"
+  size: "1500Gi"
