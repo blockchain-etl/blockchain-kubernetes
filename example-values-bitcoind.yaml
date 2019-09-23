@@ -25,3 +25,8 @@ configurationFile:
 
 externalLBp2p: true
 externalLBp2pIP: 198.51.100.0
+
+persistence:
+  enabled: true
+  storageClass: "standard-regional-us-central1-bc"
+  size: "500Gi"

@@ -24,11 +24,13 @@ gcloud compute addresses create dev-eth-0 --region $REGION  --project=$PROJECT_I
 
 gcloud compute addresses list --project=$PROJECT_ID
 ```
-* Create [SSD storage class](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/ssd-pd), replace *K8S_CONTEXT* with real value.
+* Adjust zones in `sc-ssd-regional.yaml` and `sc-standard-regional.yaml`, use the same zones as you used with GKE cluster.
+* Create storage classes, replace *K8S_CONTEXT* with real value.
 ```bash
 export K8S_CONTEXT=baas0
 kubectl --context $K8S_CONTEXT create -f sc-ssd.yaml 
-
+kubectl --context $K8S_CONTEXT create -f sc-ssd-regional.yaml
+kubectl --context $K8S_CONTEXT create -f sc-standard-regional.yaml
 ``` 
 * Copy `example-values-parity.yaml` and `example-values-bitcoind.yaml` to `values-parity.yaml` and `values-bitcoind.yaml`
 ```bash
