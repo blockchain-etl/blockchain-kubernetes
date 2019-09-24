@@ -12,7 +12,7 @@ Here is quick HOWTO deploy nodes into GKE env.
 * follow "Before you begin" part of [GCP manual](https://cloud.google.com/kubernetes-engine/docs/how-to/iam)
 
 ### Deploy
-* Create k8s GKE multi-zone cluster, use at least [n1-highmem4 instances](https://cloud.google.com/compute/docs/machine-types#n1_machine_types)
+* Create k8s GKE two zone cluster, use at least [n1-highmem4 instances](https://cloud.google.com/compute/docs/machine-types#n1_machine_types)
 * [Install](helm.md) [Helm](https://helm.sh)
 * Allocate 2 regional IP adresses, use the same region as your GKE cluster
 ```bash 
@@ -21,10 +21,12 @@ export REGION=us-central1
 
 gcloud compute addresses create dev-btc-0 --region $REGION  --project=$PROJECT_ID
 gcloud compute addresses create dev-eth-0 --region $REGION  --project=$PROJECT_ID
+gcloud compute addresses create dev-btc-1 --region $REGION  --project=$PROJECT_ID
+gcloud compute addresses create dev-eth-1 --region $REGION  --project=$PROJECT_ID
 
 gcloud compute addresses list --project=$PROJECT_ID
 ```
-* Adjust zones in `sc-ssd-regional.yaml` and `sc-standard-regional.yaml`, use the same zones as you used with GKE cluster.
+* Adjust zones in [regional storage classes](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/regional-pd) `sc-ssd-regional.yaml` and `sc-standard-regional.yaml`, use the same zones as you used with GKE cluster.
 * Create storage classes, replace *K8S_CONTEXT* with real value.
 ```bash
 export K8S_CONTEXT=baas0
