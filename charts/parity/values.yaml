@@ -93,6 +93,12 @@ resources:
     cpu: "3000m"
     memory: "12000Mi"
 
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+
 nodeSelector: {}
 
 tolerations: []

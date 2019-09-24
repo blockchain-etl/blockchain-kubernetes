@@ -43,6 +43,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args: ["-datadir={{ .Values.bitcoind.base_path }}"]
+        workingDir: "{{ .Values.bitcoind.base_path }}"
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
