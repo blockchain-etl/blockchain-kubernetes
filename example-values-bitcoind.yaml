@@ -1,26 +1,3 @@
-image:
-  repository: arilot/docker-bitcoind
-  tag: latest
-  pullPolicy: Always
-
-resources:
-  requests:
-    cpu: "2500m"
-    memory: "6000Mi"
-  limits:
-    cpu: "3500m"
-    memory: "12000Mi"
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: "bitcoind"
-          topologyKey: failure-domain.beta.kubernetes.io/zone
-
 configurationFile:
   bitcoin.conf: |-
     server=1
