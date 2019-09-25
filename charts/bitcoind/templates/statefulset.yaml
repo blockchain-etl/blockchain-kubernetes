@@ -55,6 +55,19 @@ spec:
         volumeMounts:
         - name: bitcoind-pvc
           mountPath: {{ .Values.bitcoind.base_path }}
+        - name: scripts
+          mountPath: /scripts
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - /scripts/check_node_health.sh
+              - "{{ .Values.bitcoind.base_path }}"
+              - "1200"
+              - last_synced_block.txt
+        {{- with .Values.livenessProbe }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       {{- if .Values.configurationFile }}
       initContainers:
       # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
@@ -73,6 +86,9 @@ spec:
         configMap:
           name: "{{ .Release.Name }}-config"
       {{- end }}
+      - name: scripts
+        configMap:
+          name: "{{ .Release.Name }}-scripts"
   volumeClaimTemplates:
   - metadata:
       name: bitcoind-pvc
