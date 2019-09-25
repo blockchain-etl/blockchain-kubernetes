@@ -1,14 +1,14 @@
 {{ if .Values.externalLB }}
-## ONLY USE THIS IF YOU WANT TO EXPOSE
-## JSON SERVICES TO A PUBLIC IP
+## only use this if you want to expose
+## json services to a public ip
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-lb
   labels:
+    chain: eth
 {{ include "parity.labels" . | indent 4 }}
 spec:
-# match the SERVICE
   type: LoadBalancer
   {{- if .Values.externalLBSourceRanges }}
   loadBalancerSourceRanges:

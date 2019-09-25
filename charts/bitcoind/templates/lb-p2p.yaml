@@ -5,9 +5,9 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-lb-p2p
   labels:
+    chain: btc
 {{ include "bitcoind.labels" . | indent 4 }}
 spec:
-  # match the SERVICE
   type: LoadBalancer
   {{ if .Values.externalLBp2pIP }}
   loadBalancerIP: {{ .Values.externalLBp2pIP }}
