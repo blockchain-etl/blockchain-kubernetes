@@ -12,7 +12,7 @@ Here is quick HOWTO deploy nodes into GKE env.
 * follow "Before you begin" part of [GCP manual](https://cloud.google.com/kubernetes-engine/docs/how-to/iam)
 
 ### Deploy
-* Create k8s GKE two zone cluster, use at least [n1-highmem4 instances](https://cloud.google.com/compute/docs/machine-types#n1_machine_types)
+* [Create k8s GKE two zone cluster](gke.md), use at least [n1-highmem4 instances](https://cloud.google.com/compute/docs/machine-types#n1_machine_types)
 * [Install](helm.md) [Helm](https://helm.sh)
 * Allocate 2 regional IP adresses, use the same region as your GKE cluster
 ```bash 
