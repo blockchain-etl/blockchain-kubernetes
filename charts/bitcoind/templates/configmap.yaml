@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "bitcoind.fullname" . }}
+  name:  "{{ .Release.Name }}-config"
   labels:
 {{ include "bitcoind.labels" . | indent 4 }}
 data:

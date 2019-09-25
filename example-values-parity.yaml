@@ -1,0 +1,9 @@
+externalLBp2p: true
+externalLBp2pIP: 203.0.113.0
+externalLBp2pDiscovery: true
+externalLBp2pDiscoveryIP: 203.0.113.0
+
+persistence:
+  enabled: true
+  storageClass: "ssd-regional-us-central1-bc"
+  size: "1500Gi"

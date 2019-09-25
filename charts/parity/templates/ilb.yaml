@@ -1,11 +1,12 @@
 {{ if .Values.internalLB }}
-# use this to aggregate internal pods behind
-# a single load balanced IP
+## use this to aggregate internal pods behind
+## a single load balanced IP
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-ilb
   labels:
+    chain: eth
 {{ include "parity.labels" . | indent 4 }}
   annotations:
     cloud.google.com/load-balancer-type: "Internal"

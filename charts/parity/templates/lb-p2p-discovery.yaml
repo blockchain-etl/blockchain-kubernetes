@@ -5,9 +5,9 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-lb-p2p-discovery
   labels:
+    chain: eth
 {{ include "parity.labels" . | indent 4 }}
 spec:
-  # match the SERVICE
   type: LoadBalancer
   {{ if .Values.externalLBp2pDiscovery }}
   loadBalancerIP: {{ .Values.externalLBp2pDiscoveryIP }}

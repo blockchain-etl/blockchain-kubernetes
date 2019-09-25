@@ -4,16 +4,16 @@ mode = "active"
 # Stable
 release_track = "stable"
 
-# Blockchain and settings will be stored in /data.
+# Blockchain and settings will be stored in {{ .Values.parity.base_path }}.
 base_path = "{{ .Values.parity.base_path }}"
 
 [network]
 # Parity will sync by downloading latest state first. Node will be operational in couple minutes.
 warp = false
-# Parity will try to maintain connection to at least 250 peers.
-min_peers = 250
-# Parity will maintain at most 300 peers.
-max_peers = 300
+# Parity will try to maintain connection to at least {{ .Values.parity.network.min_peers }} peers.
+min_peers = {{ .Values.parity.network.min_peers }}
+# Parity will maintain at most {{ .Values.parity.network.max_peers }} peers.
+max_peers = {{ .Values.parity.network.max_peers }}
 
 [rpc]
 #  JSON-RPC will be listening for connections on IP all.
@@ -38,8 +38,17 @@ db_compaction = "ssd"
 pruning = "archive"
 # Number of threads will vary depending on the workload. Not guaranteed to be faster.
 scale_verifiers = true
-# Will keep up to 1000MB data in Database cache.
-cache_size_db = 1000
+
+# Will keep up to {{ .Values.parity.cache_size_db }}MB data in Database cache.
+cache_size_db = {{ .Values.parity.footprint.cache_size_db }}
+# Will keep up to {{ .Values.parity.footprint.cache_size_blocks }}MB data in Blockchain cache.
+cache_size_blocks = {{ .Values.parity.footprint.cache_size_blocks }}
+# Will keep up to {{ .Values.parity.footprint.cache_size_queue }}MB of blocks in block import queue.
+cache_size_queue = {{ .Values.parity.footprint.cache_size_queue }}
+# Will keep up to {{ .Values.parity.footprint.cache_size_state }}MB data in State cache.
+cache_size_state = {{ .Values.parity.footprint.cache_size_state }}
+# If defined will never use more then {{ .Values.parity.footprint.cache_size }}MB for all caches. (Overrides other cache settings).
+cache_size = {{ .Values.parity.footprint.cache_size }}
 
 [snapshots]
 disable_periodic = false
@@ -47,5 +56,5 @@ disable_periodic = false
 [misc]
 # Logging pattern (`<module>=<level>`, e.g. `own_tx=trace`).
 logging = "info"
-log_file = "/data/parity.log"
+log_file = "{{ .Values.parity.base_path }}/parity.log"
 color = true

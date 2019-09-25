@@ -17,6 +17,10 @@ spec:
         app.kubernetes.io/name: {{ include "parity.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -33,7 +37,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -43,6 +47,7 @@ spec:
         {{ else }}
         args: ["--config=/config/parity.toml"]
         {{ end }}
+        workingDir: "{{ .Values.parity.base_path }}"
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
@@ -70,13 +75,6 @@ spec:
           periodSeconds: 300
           timeoutSeconds: 10
           failureThreshold: 2
-      initContainers:
-      - name: setup
-        image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 {{ .Values.parity.base_path }}"]
-        volumeMounts:
-        - name: parity-pvc
-          mountPath: {{ .Values.parity.base_path }}
       volumes:
         - name: parity-config
           configMap:

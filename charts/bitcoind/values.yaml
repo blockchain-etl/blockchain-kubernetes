@@ -4,7 +4,7 @@
 terminationGracePeriodSeconds: 30
 image:
   repository: arilot/docker-bitcoind
-  tag: 0.17.1
+  tag: 0.18.0
   pullPolicy: IfNotPresent
 
 service:
@@ -22,11 +22,11 @@ service:
 
 externalLB: false
 externalLBSourceRanges: {}
-#  - 127.0.0.1/32
-#  - 127.0.0.2/32
+#  - 203.0.113.2/32
+#  - 203.0.113.3/32
 
 externalLBp2p: false
-externalLBp2pIP: 1.1.1.1
+externalLBp2pIP: 198.51.100.1
 internalLB: false
 
 
@@ -47,6 +47,24 @@ resources:
     cpu: "3000m"
     memory: "12000Mi"
 
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: "bitcoind"
+          topologyKey: failure-domain.beta.kubernetes.io/zone
+
+bitcoind:
+  base_path: "/data"
+
 # Custom bitcoind configuration file used to override default bitcoind settings
 configurationFile:
   bitcoin.conf: |-
@@ -55,5 +73,7 @@ configurationFile:
     rpcuser=rpcuser
     rpcpassword=rpcpassword
     rpcbind=0.0.0.0
+    rpcallowip=::/0
     txindex=1
-    # externalip=1.1.1.1
+    disablewallet=1
+    # externalip=198.51.100.1
