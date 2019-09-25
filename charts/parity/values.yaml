@@ -4,15 +4,16 @@
 
 replicaCount: 1
 
+terminationGracePeriodSeconds: 30
+
 image:
-  repository: gcr.io/crypto-etl-clients/parity
-  tag: v2.4.6
+  repository: parity/parity
+  tag: v2.5.8-stable
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
 
 # Don't use spaces or special chars
 parity:
@@ -53,14 +54,14 @@ service:
 
 externalLB: false
 externalLBSourceRanges: {}
-#  - 127.0.0.1/32
-#  - 127.0.0.2/32
+#  - 198.51.100.1/32
+#  - 198.51.100.2/32
 
 externalLBp2p: false
-externalLBp2pIP: 1.1.1.1
+externalLBp2pIP: 203.0.113.0
 
 externalLBp2pDiscovery: false
-externalLBp2pDiscoveryIP: 1.1.1.1
+externalLBp2pDiscoveryIP: 203.0.113.0
 
 internalLB: false
 
@@ -104,14 +105,13 @@ nodeSelector: {}
 tolerations: []
 
 affinity:
-  nodeAffinity:
+  podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
-        preference:
-          matchExpressions:
-            - key: failure-domain.beta.kubernetes.io/zone
-              operator: In
-              values:
-                - us-central1-b
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: "parity"
+          topologyKey: failure-domain.beta.kubernetes.io/zone
 
 
