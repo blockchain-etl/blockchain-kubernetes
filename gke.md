@@ -31,7 +31,7 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member "serviceAccount:${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
     --role roles/monitoring.viewer
 
-gcloud container clusters create $CLUSTER_NAME --create-subnetwork name=${CLUSTER_NAME}-0 --num-nodes 1 --enable-autoscaling --max-nodes=1 --min-nodes=1 --machine-type=n1-highmem-4 --preemptible   --cluster-version latest --enable-network-policy --enable-autorepair --enable-ip-alias  --enable-master-authorized-networks --master-authorized-networks 46.4.94.145/32,159.224.49.180/32,35.195.137.161/32 --no-enable-basic-auth --zone=$MASTER_ZONE --node-locations="$NODE_LOCATIONS" --service-account="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" --project=$PROJECT_ID
+gcloud container clusters create $CLUSTER_NAME --create-subnetwork name=${CLUSTER_NAME}-0 --num-nodes 1 --enable-autoscaling --max-nodes=1 --min-nodes=1 --machine-type=n1-highmem-4 --preemptible   --cluster-version latest --enable-network-policy --enable-autorepair --enable-ip-alias  --enable-master-authorized-networks --master-authorized-networks 198.51.100.3/32,203.0.113.7/32 --no-enable-basic-auth --zone=$MASTER_ZONE --node-locations="$NODE_LOCATIONS" --service-account="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" --project=$PROJECT_ID
 
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$(gcloud config get-value core/account) --role=roles/container.admin
 gcloud container clusters get-credentials $CLUSTER_NAME --project=$PROJECT_ID
