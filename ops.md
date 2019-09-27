@@ -57,12 +57,12 @@ kubectl -n dev-btc-0 exec -it  dev-btc0-bitcoind-0 bash
 bitcoin-cli -datadir=/data getblockcount
 ```
 
-Get peers count, 
+Get peers count 
 * parity, look before `peers` word
 ```bash
 kubectl -n dev-eth-0 logs --tail=10 dev-eth0-parity-0
 ```
-* bitcoind, it should be 8+
+* bitcoind, it should be 8+ connections
 ```bash
 kubectl -n dev-btc-0 exec -it  dev-btc0-bitcoind-0 bash
 bitcoin-cli  -datadir=/data -getinfo|grep connections
@@ -112,7 +112,7 @@ Source:
     Type:       GCEPersistentDisk (a Persistent Disk resource in Google Compute Engine)
     PDName:     gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be
 ``` 
-We get `PDName: gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be`, that's the name of disk we need to snapshot.
+We get `gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be`, that's the name of disk we need to snapshot.
 You may use [official doc](https://cloud.google.com/compute/docs/disks/create-snapshots) to create snapshot, here is quick example command to do so
 ```bash
 gcloud compute disks snapshot gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be
