@@ -63,7 +63,7 @@ spec:
               - /bin/sh
               - /scripts/check_node_health.sh
               - "{{ .Values.bitcoind.base_path }}"
-              - "1200"
+              - "3600"
               - last_synced_block.txt
         {{- with .Values.livenessProbe }}
           {{- toYaml . | nindent 10 }}
