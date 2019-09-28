@@ -117,4 +117,11 @@ You may use [official doc](https://cloud.google.com/compute/docs/disks/create-sn
 ```bash
 gcloud compute disks snapshot gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be
 ```
- 
+It may be better to stop blockchain node [to get consistent snapshot with high probability](https://cloud.google.com/compute/docs/disks/snapshot-best-practices). Here is how you can do it for example with eth node:
+```bash
+kubectl -n dev-eth-0 scale statefulset dev-eth0-parity --replicas=0
+``` 
+Wait 1 minute and then create the snapshot. Use following command to start node again:
+```bash
+kubectl -n dev-eth-0 scale statefulset dev-eth0-parity --replicas=1
+```
