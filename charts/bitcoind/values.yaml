@@ -77,3 +77,9 @@ configurationFile:
     txindex=1
     disablewallet=1
     # externalip=198.51.100.1
+
+livenessProbe:
+  initialDelaySeconds: 600
+  periodSeconds: 600
+  timeoutSeconds: 500
+  failureThreshold: 2

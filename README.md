@@ -56,5 +56,6 @@ helm --kube-context $K8S_CONTEXT install charts/bitcoind/ --namespace dev-btc-0 
 kubectl --context $K8S_CONTEXT --namespace dev-eth-0 describe statefulset dev-eth-0-parity
 kubectl --context $K8S_CONTEXT --namespace dev-eth-0 describe pod dev-eth-0-parity-0
 ```
+Please check [separate file](ops.md) for more details about additional troubleshooting.
 
 **TIP**: when you need archive parity node to sync up faster - get a tons of RAM and preload synced blockchain into OS cache. My case was 640GB of RAM and blockchain preload from inside container via `find | xargs cat > /dev/null` or [vmtouch](https://github.com/hoytech/vmtouch/), 3-5x speedup  from 0.5-2 blocks/sec(100-200 tx/sec) to 7-10 blocks/sec (700-1000 tx/sec) and sustained blockchain write near 150MB/s, just $1/hour with preemptible nodes.
