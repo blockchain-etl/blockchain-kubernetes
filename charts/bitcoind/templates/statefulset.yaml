@@ -60,7 +60,7 @@ spec:
         livenessProbe:
           exec:
             command:
-              - /bin/sh
+              - /bin/bash
               - /scripts/check_node_health.sh
               - "{{ .Values.bitcoind.base_path }}"
               - "3600"
