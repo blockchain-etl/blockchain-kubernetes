@@ -42,10 +42,10 @@ persistence:
 resources:
   requests:
     cpu: "2800m"
-    memory: "10000Mi"
+    memory: "2000Mi"
   limits:
     cpu: "3000m"
-    memory: "12000Mi"
+    memory: "3000Mi"
 
 securityContext:
   runAsUser: 1000
