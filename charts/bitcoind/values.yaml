@@ -29,6 +29,15 @@ externalLBp2p: false
 externalLBp2pIP: 198.51.100.1
 internalLB: false
 
+storageClassSSD:
+  enabled: true
+  name:  "ssd-regional-us-central1-bc"
+  zones: "us-central1-b, us-central1-c"
+
+storageClassStandard:
+  enabled: true
+  name:  "standard-regional-us-central1-bc"
+  zones: "us-central1-b, us-central1-c"
 
 persistence:
   enabled: true
