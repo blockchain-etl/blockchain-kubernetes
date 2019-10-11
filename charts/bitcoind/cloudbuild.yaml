@@ -1,16 +1,15 @@
 steps:
   - name: '${_REGISTRY}/$PROJECT_ID/helm'
-    entrypoint: 'bash'
     args:
-      - -c
-      - tar czf ${_CHART_NAME}-${SHORT_SHA}.tar.gz -C charts/$_CHART_NAME .
-    id: 'helm archive'
+      - package
+      - charts/$_CHART_NAME
+    id: 'helm package'
 
   - name: '${_REGISTRY}/$PROJECT_ID/helm'
     args:
       - gcs
       - push
-      - ${_CHART_NAME}-${SHORT_SHA}.tar.gz
+      - ${_CHART_NAME}-*.tar.gz
       - $_HELM_REPO_NAME
     id: 'helm push'
     env:
