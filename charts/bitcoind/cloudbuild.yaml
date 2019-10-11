@@ -4,14 +4,6 @@ steps:
       - package
       - charts/$_CHART_NAME
     id: 'helm package'
-
-  - name: '${_REGISTRY}/$PROJECT_ID/helm'
-    args:
-      - gcs
-      - push
-      - ${_CHART_NAME}-*.tar.gz
-      - $_HELM_REPO_NAME
-    id: 'helm push'
     env:
       - GCS_PLUGIN_VERSION=0.2.1
       - HELMFILE_VERSION=v0.85.3
@@ -32,7 +24,14 @@ steps:
     args:
       - -c
       - helm local-chart-version get -c charts/$_CHART_NAME > $_ARTIFACT_FILENAME
-    id: 'save artifact'
+    id: 'save version to artifact'
+
+  - name: '${_REGISTRY}/$PROJECT_ID/helm'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - helm gcs push ${_CHART_NAME}-$(cat $_ARTIFACT_FILENAME).tgz $_HELM_REPO_NAME
+    id: 'helm push'
 
 substitutions:
  _REGISTRY: gcr.io
