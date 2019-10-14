@@ -5,7 +5,8 @@ metadata:
   labels:
 {{ include "bitcoind.labels" . | indent 4 }}
 data:
-{{ toYaml .Values.configurationFile | indent 2 }}
+  bitcoin.conf: |-
+  {{- include "bitcoind/templates/_bitcoin.conf" . | nindent 4 }}
 ---
 apiVersion: v1
 kind: ConfigMap
