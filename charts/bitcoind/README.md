@@ -84,9 +84,9 @@ Please NOT use emptyDir for production cluster! Your wallets will be lost on con
 
 ```yaml
 configurationFile:
-  bitcoind.conf: |-
-    server=1
-    printtoconsole=1
-    rpcuser=rpcuser
-    rpcpassword=rpcpassword
+  rpcuser: "rpcuser"
+  rpcpassword: "rpcpassword"
+  externalLBp2pIP: 198.51.100.5
+  custom: |-
+    txindex=1
 ```
