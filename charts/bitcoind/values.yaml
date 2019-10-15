@@ -26,9 +26,7 @@ externalLBSourceRanges: {}
 #  - 203.0.113.3/32
 
 externalLBp2p: false
-externalLBp2pIP: 198.51.100.1
 internalLB: false
-
 
 persistence:
   enabled: true
@@ -42,10 +40,10 @@ persistence:
 resources:
   requests:
     cpu: "2800m"
-    memory: "10000Mi"
+    memory: "2000Mi"
   limits:
     cpu: "3000m"
-    memory: "12000Mi"
+    memory: "3000Mi"
 
 securityContext:
   runAsUser: 1000
@@ -67,16 +65,14 @@ bitcoind:
 
 # Custom bitcoind configuration file used to override default bitcoind settings
 configurationFile:
-  bitcoin.conf: |-
-    server=1
-    printtoconsole=1
-    rpcuser=rpcuser
-    rpcpassword=rpcpassword
-    rpcbind=0.0.0.0
-    rpcallowip=::/0
+  rpcuser: "rpcuser"
+  rpcpassword: "rpcpassword"
+  rpcbind: "0.0.0.0"
+  rpcallowip: "::/0"
+  externalLBp2pIP: "198.51.100.1"
+  custom: |-
     txindex=1
     disablewallet=1
-    # externalip=198.51.100.1
 
 livenessProbe:
   initialDelaySeconds: 600

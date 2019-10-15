@@ -9,9 +9,9 @@ metadata:
 {{ include "bitcoind.labels" . | indent 4 }}
 spec:
   type: LoadBalancer
-  {{ if .Values.externalLBp2pIP }}
-  loadBalancerIP: {{ .Values.externalLBp2pIP }}
-  {{ end }}
+  {{ if .Values.configurationFile.externalLBp2pIP -}}
+  loadBalancerIP: {{ .Values.configurationFile.externalLBp2pIP }}
+  {{ end -}}
   ports:
     - name: {{ .Values.service.p2pPortName }}
       port: {{ .Values.service.p2pPort }}

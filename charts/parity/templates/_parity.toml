@@ -51,7 +51,7 @@ cache_size_state = {{ .Values.parity.footprint.cache_size_state }}
 cache_size = {{ .Values.parity.footprint.cache_size }}
 
 [snapshots]
-disable_periodic = false
+disable_periodic = true
 
 [misc]
 # Logging pattern (`<module>=<level>`, e.g. `own_tx=trace`).
