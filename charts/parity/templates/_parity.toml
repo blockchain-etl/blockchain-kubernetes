@@ -32,8 +32,8 @@ disable = true
 [footprint]
 # Compute and Store tracing data. (Enables trace_* APIs).
 tracing = "on"
-# Increase performance on SSD.
-db_compaction = "ssd"
+# Database compaction type. TYPE may be one of: ssd - suitable for SSDs and fast HDDs; hdd - suitable for slow HDDs; auto - determine automatically. (default: auto)
+db_compaction = "{{ .Values.parity.footprint.db_compaction }}"
 # Keep all state trie data. No pruning.
 pruning = "archive"
 # Number of threads will vary depending on the workload. Not guaranteed to be faster.

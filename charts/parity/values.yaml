@@ -24,6 +24,7 @@ parity:
     cache_size_queue: 200
     cache_size_state: 250
     cache_size: 6144
+    db_compaction: ssd
   network:
     min_peers: 250
     max_peers: 300
