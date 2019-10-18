@@ -115,7 +115,7 @@ Source:
 We get `gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be`, that's the name of disk we need to snapshot.
 You may use [official doc](https://cloud.google.com/compute/docs/disks/create-snapshots) to create snapshot, here is quick example command to do so
 ```bash
-gcloud compute disks snapshot gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be
+gcloud compute disks snapshot gke-baas0-fff79c5e-dyn-pvc-d0846f83-df05-11e9-8a31-42010a8001be --snapshot-names=dev-eth0-parity
 ```
 It may be better to stop blockchain node [to get consistent snapshot with high probability](https://cloud.google.com/compute/docs/disks/snapshot-best-practices). Here is how you can do it for example with eth node:
 ```bash
@@ -125,3 +125,64 @@ Wait 1 minute and then create the snapshot. Use following command to start node 
 ```bash
 kubectl -n dev-eth-0 scale statefulset dev-eth0-parity --replicas=1
 ```
+You may need to convert your snapshot to an image, for example to share the image
+```bash
+gcloud compute images create parity-2019-10-16 --source-snapshot=dev-eth0-parity
+``` 
+### Provision cryptonode with pre-existing image
+When you have someone who shared pre-synced cryptonode disk image with you, you can create a new disk from this image and use it with your cryptonode, and here is how.
+* (optional) copy disk image to your project
+```bash
+gcloud compute images create parity-2-5-5-2019-10-16 --source-image=parity-2-5-5-2019-10-16 --source-image-project=<SOURCE-PROJECT>
+```
+Now we have two options - single zone disk or regional disk, choose one
+#### Single zone disk
+* just create SSD disk from the image, pay attention to zone, it must be the same as your GKE cluster 
+```bash
+gcloud compute disks create parity-0 --type pd-ssd --zone us-central1-b  --image=parity-2-5-5-2019-10-16 --image-project=<SOURCE-PROJECT>
+```
+#### Regional disk
+Due to `Creating a regional disk from a source image is not supported yet.` we need to perform this task with intermediate steps
+* create single zone standard disk from the image
+```bash
+gcloud compute disks create parity-tmp --type pd-standard --zone us-central1-b  --image=parity-2-5-5-2019-10-16 --image-project=<SOURCE-PROJECT>
+```
+* create a snapshot from disk we just created. We can then create regional disk from snapshot it the corresponding region
+```bash
+gcloud compute disks snapshot parity-tmp --snapshot-names=parity-2-5-5-2019-10-16 --storage-location=us-central1 --zone us-central1-b
+```
+* remove standard disk, we don't need it
+```bash
+gcloud compute disks delete parity-tmp --zone us-central1-b
+```
+* create regional SSD disk from the snapshot, use same `replica-zones` as your GKE cluster  
+```bash
+gcloud compute disks create parity-0 --type pd-ssd --region us-central1 --replica-zones=us-central1-c,us-central1-b --source-snapshot=parity-2-5-5-2019-10-16
+```
+#### Attaching disk to cryptonode pod
+Now we need to create [PersistentVolume in Kubernetes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)(PV) and use this PV with [PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) (PVC) we already have.
+* adjust [pv.yaml](pv.yaml)(1 zone disk) or [pv-r.yaml](pv-r.yaml)(regional disk) with your disk name, zones etc. In this manual we assume you have required storage classes already from cryptonode deployment.
+* create PV via following command, use one of them:
+```bash
+kubectl create -f pv.yaml
+# or
+kubectl create -f pv-r.yaml
+```
+* shutdown cryptonode:
+```bash
+kubectl -n prod-eth-0 scale statefulset prod-eth0-parity --replicas=0
+``` 
+let it some time to shutdown, you can monitor it with `kubectl -n prod-eth-0 get pod -w` usually
+
+* replace existing PVC by a copy with another disk name `parity-0`, I use `parity-pvc-prod-eth1-parity-0` PVC in `prod-eth-1` namespace in the example below:
+```bash
+# backup just in case
+kubectl -n prod-eth-1 get pvc parity-pvc-prod-eth1-parity-0 -o yaml > parity-pvc-prod-eth1-parity-0.yaml 
+kubectl -n prod-eth-1 get pvc parity-pvc-prod-eth1-parity-0 -o json|jq '.spec.volumeName="parity-0"'| kubectl -n prod-eth-1 replace --force -f -
+```
+* start cryptonode up and check logs
+```bash
+kubectl -n prod-eth-0 scale statefulset prod-eth0-parity --replicas=1
+kubectl -n prod-eth-0 get pod -w
+kubectl -n prod-eth-0 logs -f prod-eth0-parity-0
+``` 
