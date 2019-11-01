@@ -9,13 +9,13 @@ keywords:
 - cryptocurrency
 - blockchain
 maintainers:
-- email: daniel@arilot.com
+- email: daniel@dysnix.com
   name: daniel-yavorovich
-- email: shiyanval@gmail.com
-  name: govale
+- email: av@dysnix.com
+  name: voron
 name: bitcoind
 sources:
 - https://github.com/kubernetes/charts
-- https://github.com/kuberstack/bitcoind
+- https://github.com/dysnix/bitcoind
 - https://github.com/kylemanna/docker-bitcoind
-version: 0.3.30
+version: 0.3.31
