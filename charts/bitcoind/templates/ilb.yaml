@@ -13,7 +13,12 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  {{- toYaml .Values.service.ports | nindent 4 }}
+    - name: {{ .Values.service.rpcPortName }}
+      port: {{ .Values.service.rpcPort }}
+      targetPort: {{ .Values.service.rpcPortName }}
+    - name: {{ .Values.service.p2pPortName }}
+      port: {{ .Values.service.p2pPort }}
+      targetPort: {{ .Values.service.p2pPortName }}
   selector:
     app.kubernetes.io/name: {{ include "bitcoind.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

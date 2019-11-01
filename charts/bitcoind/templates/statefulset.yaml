@@ -47,11 +47,12 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
-        {{- range $val := .Values.service.ports }}
-        - containerPort: {{ $val.port }}
-          name: "{{ $val.name }}"
-          protocol: {{ $val.protocol | default "TCP" }}
-        {{- end }}
+        - containerPort: {{ .Values.service.rpcPort }}
+          name: "{{ .Values.service.rpcPortName }}"
+          protocol: "TCP"
+        - containerPort: {{ .Values.service.p2pPort }}
+          name: "{{ .Values.service.p2pPortName }}"
+          protocol: "TCP"
         volumeMounts:
         - name: bitcoind-pvc
           mountPath: {{ .Values.bitcoind.base_path }}
