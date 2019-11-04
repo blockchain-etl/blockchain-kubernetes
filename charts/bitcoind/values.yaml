@@ -58,6 +58,7 @@ bitcoind:
   # you may need to override this with clones such as litecoin
   configurationFileName: "bitcoin.conf"
   bitcoin_cli: "bitcoin-cli"
+  chain: "btc"
 
 # Custom bitcoind configuration file used to override default bitcoind settings
 configurationFile:

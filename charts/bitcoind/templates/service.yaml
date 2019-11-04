@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-service
   labels:
-    chain: btc
+    chain: {{ .Values.bitcoind.chain }}
 {{ include "bitcoind.labels" . | indent 4 }}
 spec:
   ports:
