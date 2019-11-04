@@ -12,6 +12,13 @@ fi
 # it may take up to 5-10 minutes during sync
 block_number=$(bitcoin-cli  -datadir=${datadir} getblockcount)
 
+ret=$?
+# https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list#Error_Codes
+if [ "$ret" -eq "28" ];then
+  echo Loading block index...
+  exit 0
+fi
+
 number_re='^[0-9]+$'
 if [ -z "${block_number}" ] || [[ ! ${block_number} =~ $number_re ]]; then
     echo "Block number returned by the node is empty or not a number"
