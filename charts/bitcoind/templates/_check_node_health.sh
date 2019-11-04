@@ -11,7 +11,7 @@ if [ -z "${datadir}" ] || [ -z "${max_lag_in_seconds}" ] || [ -z "${last_synced_
     usage
 fi
 # it may take up to 5-10 minutes during sync
-block_number=$(bitcoin-cli  -datadir=${datadir} getblockcount)
+block_number=$({{ .Values.bitcoind.bitcoin_cli }}  -datadir=${datadir} getblockcount)
 
 ret=$?
 # https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list#Error_Codes
