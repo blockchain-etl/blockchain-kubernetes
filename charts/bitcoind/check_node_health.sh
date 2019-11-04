@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -ex # -e exits on error
 
 usage() { echo "Usage: $0 <datadir> <max_lag_in_seconds> <last_synced_block_file>]" 1>&2; exit 1; }
@@ -14,7 +15,7 @@ block_number=$(bitcoin-cli  -datadir=${datadir} getblockcount)
 
 ret=$?
 # https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list#Error_Codes
-if [ "$ret" -eq "28" ];then
+if [[ "$ret" -eq "28" ]];then
   echo Loading block index...
   exit 0
 fi
@@ -23,6 +24,12 @@ number_re='^[0-9]+$'
 if [ -z "${block_number}" ] || [[ ! ${block_number} =~ $number_re ]]; then
     echo "Block number returned by the node is empty or not a number"
     exit 1
+fi
+
+# handling special case with blockchain re-index
+if [[ "$block_number" -eq "0" ]];then
+  echo "Reindexing ..."
+  exit 0
 fi
 
 if [ ! -f ${last_synced_block_file} ]; then
