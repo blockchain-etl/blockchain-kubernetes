@@ -4,6 +4,10 @@ mode = "active"
 # Stable
 release_track = "stable"
 
+# https://wiki.parity.io/Chain-specification#chain-presets-available
+# mainnet, kovan, classic, ...
+chain = {{ .Values.parity.chain }}
+
 # Blockchain and settings will be stored in {{ .Values.parity.base_path }}.
 base_path = "{{ .Values.parity.base_path }}"
 
