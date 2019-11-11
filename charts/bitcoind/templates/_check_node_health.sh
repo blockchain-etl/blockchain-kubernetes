@@ -14,7 +14,7 @@ fi
 set +e
 
 # it may take up to 5-10 minutes during sync
-block_number=$({{ .Values.bitcoind.bitcoin_cli }}  -datadir=${datadir} getblockcount)
+block_number=$({{ .Values.bitcoind.cli_binary }}  -datadir=${datadir} getblockcount)
 
 ret=$?
 # https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list#Error_Codes
