@@ -71,6 +71,8 @@ configurationFile:
     txindex=1
     disablewallet=1
 
+zcash_fetch_params: false
+
 livenessProbe:
   initialDelaySeconds: 600
   periodSeconds: 600

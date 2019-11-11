@@ -69,8 +69,8 @@ spec:
         {{- with .Values.livenessProbe }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
-      {{- if .Values.configurationFile }}
       initContainers:
+      {{- if .Values.configurationFile }}
       # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
       - name: copy-bitcoind-config
         image: busybox
@@ -80,6 +80,15 @@ spec:
           mountPath: /configmap
         - name: bitcoind-pvc
           mountPath: {{ .Values.bitcoind.base_path }}
+      {{- end }}
+      {{- if .Values.zcash_fetch_params }}
+      - name: zcash-fetch-params
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ['zcash-fetch-params']
+        volumeMounts:
+          - name: bitcoind-pvc
+            mountPath: "/home/zcash"
       {{- end }}
       volumes:
       {{- if .Values.configurationFile }}
