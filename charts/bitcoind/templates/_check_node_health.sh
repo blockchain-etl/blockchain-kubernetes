@@ -11,7 +11,7 @@ if [ -z "${datadir}" ] || [ -z "${max_lag_in_seconds}" ] || [ -z "${last_synced_
     usage
 fi
 
-set -x
+set +e
 
 # it may take up to 5-10 minutes during sync
 block_number=$({{ .Values.bitcoind.bitcoin_cli }}  -datadir=${datadir} getblockcount)
@@ -23,7 +23,7 @@ if [[ "$ret" -eq "28" ]];then
   exit 0
 fi
 
-set -ex
+set -e
 
 number_re='^[0-9]+$'
 if [ -z "${block_number}" ] || [[ ! ${block_number} =~ $number_re ]]; then
