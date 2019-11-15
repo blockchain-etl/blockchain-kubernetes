@@ -114,6 +114,7 @@ affinity:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: "parity"
+              parity/chain: "mainnet"
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
 
