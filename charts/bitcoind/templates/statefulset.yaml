@@ -47,11 +47,12 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
-        {{- range $val := .Values.service.ports }}
-        - containerPort: {{ $val.port }}
-          name: "{{ $val.name }}"
-          protocol: {{ $val.protocol | default "TCP" }}
-        {{- end }}
+        - containerPort: {{ .Values.service.rpcPort }}
+          name: "{{ .Values.service.rpcPortName }}"
+          protocol: "TCP"
+        - containerPort: {{ .Values.service.p2pPort }}
+          name: "{{ .Values.service.p2pPortName }}"
+          protocol: "TCP"
         volumeMounts:
         - name: bitcoind-pvc
           mountPath: {{ .Values.bitcoind.base_path }}
@@ -68,17 +69,26 @@ spec:
         {{- with .Values.livenessProbe }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
-      {{- if .Values.configurationFile }}
       initContainers:
+      {{- if .Values.configurationFile }}
       # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
       - name: copy-bitcoind-config
         image: busybox
-        command: ['sh', '-c', 'cp /configmap/bitcoin.conf {{ .Values.bitcoind.base_path }}/bitcoin.conf']
+        command: ['sh', '-c', 'cp /configmap/{{ .Values.bitcoind.configurationFileName }} {{ .Values.bitcoind.base_path }}/{{ .Values.bitcoind.configurationFileName }}']
         volumeMounts:
         - name: bitcoind-config
           mountPath: /configmap
         - name: bitcoind-pvc
           mountPath: {{ .Values.bitcoind.base_path }}
+      {{- end }}
+      {{- if .Values.zcash_fetch_params }}
+      - name: zcash-fetch-params
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ['zcash-fetch-params']
+        volumeMounts:
+          - name: bitcoind-pvc
+            mountPath: "/home/zcash"
       {{- end }}
       volumes:
       {{- if .Values.configurationFile }}

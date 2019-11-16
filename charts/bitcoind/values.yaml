@@ -3,22 +3,15 @@
 # Declare variables to be passed into your templates.
 terminationGracePeriodSeconds: 30
 image:
-  repository: arilot/docker-bitcoind
+  repository: dysnix/docker-bitcoind
   tag: 0.18.0
   pullPolicy: IfNotPresent
 
 service:
-  rpcPortName: &rpcPortName jsonrpc
-  rpcPort: &rpcPort 8332
-  p2pPort: &p2pPort 8333
-  p2pPortName: &p2pPortName p2p
-  ports:
-    - name: *rpcPortName
-      port: *rpcPort
-      targetPort: *rpcPortName
-    - name: *p2pPortName
-      port: *p2pPort
-      targetPort: *p2pPortName
+  rpcPortName: jsonrpc
+  rpcPort: 8332
+  p2pPort: 8333
+  p2pPortName: p2p
 
 externalLB: false
 externalLBSourceRanges: {}
@@ -62,6 +55,10 @@ affinity:
 
 bitcoind:
   base_path: "/data"
+  # you may need to override this with clones such as litecoin
+  configurationFileName: "bitcoin.conf"
+  cli_binary: "bitcoin-cli"
+  chain: "btc"
 
 # Custom bitcoind configuration file used to override default bitcoind settings
 configurationFile:
@@ -73,6 +70,8 @@ configurationFile:
   custom: |-
     txindex=1
     disablewallet=1
+
+zcash_fetch_params: false
 
 livenessProbe:
   initialDelaySeconds: 600

@@ -17,6 +17,7 @@ fullnameOverride: ""
 
 # Don't use spaces or special chars
 parity:
+  chain: "mainnet"
   base_path: "/data"
   footprint:
     cache_size_db: 4096
@@ -24,6 +25,7 @@ parity:
     cache_size_queue: 200
     cache_size_state: 250
     cache_size: 6144
+    db_compaction: ssd
   network:
     min_peers: 250
     max_peers: 300
@@ -112,6 +114,7 @@ affinity:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: "parity"
+              parity/chain: "mainnet"
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
 

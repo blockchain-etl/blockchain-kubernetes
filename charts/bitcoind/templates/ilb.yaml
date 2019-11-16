@@ -6,14 +6,19 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-ilb
   labels:
-    chain: btc
+    chain: {{ .Values.bitcoind.chain }}
 {{ include "bitcoind.labels" . | indent 4 }}
   annotations:
     cloud.google.com/load-balancer-type: "Internal"
 spec:
   type: LoadBalancer
   ports:
-  {{- toYaml .Values.service.ports | nindent 4 }}
+    - name: {{ .Values.service.rpcPortName }}
+      port: {{ .Values.service.rpcPort }}
+      targetPort: {{ .Values.service.rpcPortName }}
+    - name: {{ .Values.service.p2pPortName }}
+      port: {{ .Values.service.p2pPort }}
+      targetPort: {{ .Values.service.p2pPortName }}
   selector:
     app.kubernetes.io/name: {{ include "bitcoind.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

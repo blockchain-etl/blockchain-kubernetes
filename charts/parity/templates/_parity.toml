@@ -4,6 +4,10 @@ mode = "active"
 # Stable
 release_track = "stable"
 
+# https://wiki.parity.io/Chain-specification#chain-presets-available
+# mainnet, kovan, classic, ...
+chain = "{{ .Values.parity.chain }}"
+
 # Blockchain and settings will be stored in {{ .Values.parity.base_path }}.
 base_path = "{{ .Values.parity.base_path }}"
 
@@ -32,8 +36,8 @@ disable = true
 [footprint]
 # Compute and Store tracing data. (Enables trace_* APIs).
 tracing = "on"
-# Increase performance on SSD.
-db_compaction = "ssd"
+# Database compaction type. TYPE may be one of: ssd - suitable for SSDs and fast HDDs; hdd - suitable for slow HDDs; auto - determine automatically. (default: auto)
+db_compaction = "{{ .Values.parity.footprint.db_compaction }}"
 # Keep all state trie data. No pruning.
 pruning = "archive"
 # Number of threads will vary depending on the workload. Not guaranteed to be faster.

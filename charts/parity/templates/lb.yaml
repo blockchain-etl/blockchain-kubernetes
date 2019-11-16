@@ -17,7 +17,12 @@ spec:
     {{ end }}
   {{ end }}
   ports:
-  {{- toYaml .Values.service.ports | nindent 4 }}
+    - name: {{ .Values.service.rpcPortName }}
+      port: {{ .Values.service.rpcPort }}
+      targetPort: {{ .Values.service.rpcPortName }}
+    - name: {{ .Values.service.wsPortName }}
+      port: {{ .Values.service.wsPort }}
+      targetPort: {{ .Values.service.wsPortName }}
   selector:
     app.kubernetes.io/name: {{ include "parity.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
