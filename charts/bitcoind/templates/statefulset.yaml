@@ -69,6 +69,14 @@ spec:
         {{- with .Values.livenessProbe }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        lifecycle:
+          preStop:
+            exec:
+              # we don't need to poll some resources, as we stop PID 1, just sleep after stop command to tell k8s - "shutdown is in process"
+              command:
+                - /bin/sh
+                - -c
+                - "{{ .Values.bitcoind.cli_binary }} -datadir={{ .Values.bitcoind.base_path }} stop; sleep {{ .Values.terminationGracePeriodSeconds }}"
       initContainers:
       {{- if .Values.configurationFile }}
       # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
