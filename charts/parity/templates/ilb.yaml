@@ -12,6 +12,9 @@ metadata:
     cloud.google.com/load-balancer-type: "Internal"
 spec:
   type: LoadBalancer
+  {{ if .Values.internalLBIP }}
+  loadBalancerIP: {{ .Values.internalLBIP }}
+  {{ end }}
   ports:
     - name: {{ .Values.service.rpcPortName }}
       port: {{ .Values.service.rpcPort }}

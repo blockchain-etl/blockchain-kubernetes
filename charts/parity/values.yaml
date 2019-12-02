@@ -55,6 +55,7 @@ service:
       protocol: *p2pPortProtocol1
 
 externalLB: false
+externalLBIP: ""
 externalLBSourceRanges: {}
 #  - 198.51.100.1/32
 #  - 198.51.100.2/32
@@ -66,6 +67,7 @@ externalLBp2pDiscovery: false
 externalLBp2pDiscoveryIP: 203.0.113.0
 
 internalLB: false
+internalLBIP: ""
 
 persistence:
   enabled: true
