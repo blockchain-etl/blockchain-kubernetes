@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 terminationGracePeriodSeconds: 30
 image:
-  repository: dysnix/docker-bitcoind
+  repository: blockchainetl/bitcoind
   tag: 0.18.0
   pullPolicy: IfNotPresent
 
