@@ -10,6 +10,9 @@ metadata:
 {{ include "parity.labels" . | indent 4 }}
 spec:
   type: LoadBalancer
+  {{ if .Values.externalLBIP }}
+  loadBalancerIP: {{ .Values.externalLBIP }}
+  {{ end }}
   {{- if .Values.externalLBSourceRanges }}
   loadBalancerSourceRanges:
     {{- range $val := .Values.externalLBSourceRanges }}

@@ -39,7 +39,7 @@ kubectl --context $K8S_CONTEXT create -f sc-standard-regional.yaml
 cp example-values-parity.yaml values-parity.yaml
 cp example-values-bitcoind.yaml values-bitcoind.yaml
 ```
-* Adjust `values-parity.yaml` and `values-bitcoind.yaml`, pay attention to resource requests and limits, IP adresses, volume size, and RPC credentials. Replace `198.51.100.0` and `203.0.113.0` with real IP values of allocated adresses.
+* Adjust `values-parity.yaml` and `values-bitcoind.yaml`, pay attention to [resource requests and limits](resources.md), IP adresses, volume size, and RPC credentials. Replace `198.51.100.0` and `203.0.113.0` with real IP values of allocated adresses.
 ```bash
 export EDITOR=vi
 $EDITOR values-bitcoind.yaml

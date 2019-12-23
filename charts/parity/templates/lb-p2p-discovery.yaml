@@ -9,7 +9,7 @@ metadata:
 {{ include "parity.labels" . | indent 4 }}
 spec:
   type: LoadBalancer
-  {{ if .Values.externalLBp2pDiscovery }}
+  {{ if .Values.externalLBp2pDiscoveryIP }}
   loadBalancerIP: {{ .Values.externalLBp2pDiscoveryIP }}
   {{ end }}
   ports:

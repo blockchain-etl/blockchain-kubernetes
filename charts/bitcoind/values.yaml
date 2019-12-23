@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 terminationGracePeriodSeconds: 30
 image:
-  repository: dysnix/docker-bitcoind
+  repository: blockchainetl/bitcoind
   tag: 0.18.0
   pullPolicy: IfNotPresent
 
@@ -14,12 +14,14 @@ service:
   p2pPortName: p2p
 
 externalLB: false
+externalLBIP: ""
 externalLBSourceRanges: {}
 #  - 203.0.113.2/32
 #  - 203.0.113.3/32
 
 externalLBp2p: false
 internalLB: false
+internalLBIP: ""
 
 persistence:
   enabled: true

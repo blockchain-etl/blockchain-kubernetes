@@ -16,6 +16,6 @@ maintainers:
 name: bitcoind
 sources:
 - https://github.com/kubernetes/charts
-- https://github.com/dysnix/bitcoind
+- https://github.com/blockchain-etl/docker-bitcoind
 - https://github.com/kylemanna/docker-bitcoind
-version: 0.3.39
+version: 0.3.43
