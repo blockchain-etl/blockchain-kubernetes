@@ -29,6 +29,8 @@ parity:
   network:
     min_peers: 250
     max_peers: 300
+  misc:
+    logging: info
 
 service:
   type: ClusterIP

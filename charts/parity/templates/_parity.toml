@@ -59,6 +59,6 @@ disable_periodic = true
 
 [misc]
 # Logging pattern (`<module>=<level>`, e.g. `own_tx=trace`).
-logging = "info"
+logging = "{{ .Values.parity.misc.logging }}"
 log_file = "{{ .Values.parity.base_path }}/parity.log"
 color = true
