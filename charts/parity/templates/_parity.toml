@@ -19,7 +19,7 @@ min_peers = {{ .Values.parity.network.min_peers }}
 # Parity will maintain at most {{ .Values.parity.network.max_peers }} peers.
 max_peers = {{ .Values.parity.network.max_peers }}
 #Override the bootnodes from our chain. NODES should be comma-delimited enodes.
-bootnodes = {{ .Values.parity.network.bootnodes }}
+bootnodes = {{ .Values.parity.network.bootnodes | toJson }}
 
 [rpc]
 #  JSON-RPC will be listening for connections on IP all.
