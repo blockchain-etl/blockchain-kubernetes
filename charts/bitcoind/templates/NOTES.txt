@@ -9,4 +9,4 @@ To connect to bitcoind RPC:
 
 2. Test connection with user and password provided in configuration file:
 
-  $ curl --user rpcuser:rpcpassword -k http://127.0.0.1:{{ .Values.service.rpcPort }} --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'
+  $ curl --user {{ .Values.configurationFile.rpcuser | quote | default "rpcuser" }}:{{ .Values.configurationFile.rpcpassword | quote | default "rpcpassword" }} -k http://127.0.0.1:{{ .Values.service.rpcPort }} --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'
