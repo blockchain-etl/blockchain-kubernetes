@@ -34,6 +34,12 @@ parity:
   misc:
     logging: info
 
+livenessProbe:
+  initialDelaySeconds: 300
+  periodSeconds: 300
+  timeoutSeconds: 10
+  failureThreshold: 2
+
 service:
   type: ClusterIP
   rpcPortName: &rpcPortName jsonrpc
