@@ -8,7 +8,7 @@ terminationGracePeriodSeconds: 60
 
 image:
   repository: parity/parity
-  tag: v2.5.12-stable
+  tag: v2.5.13-stable
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -29,6 +29,17 @@ parity:
   network:
     min_peers: 250
     max_peers: 300
+    # f.e. ["enode://...@203.0.113.1:30303","enode://...@203.0.113.2:30304", "enode://...@203.0.113.3:30304"]
+    bootnodes: []
+  misc:
+    logging: info
+
+livenessProbe:
+  initialDelaySeconds: 300
+  periodSeconds: 300
+  timeoutSeconds: 10
+  successThreshold: 1
+  failureThreshold: 2
 
 service:
   type: ClusterIP

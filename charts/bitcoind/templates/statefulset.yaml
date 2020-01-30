@@ -66,9 +66,11 @@ spec:
               - "{{ .Values.bitcoind.base_path }}"
               - "3600"
               - last_synced_block.txt
-        {{- with .Values.livenessProbe }}
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         lifecycle:
           preStop:
             exec:

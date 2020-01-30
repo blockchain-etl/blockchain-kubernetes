@@ -73,10 +73,11 @@ spec:
             - http://127.0.0.1:{{ .Values.service.rpcPort }}
             - "300"
             - last_synced_block.txt
-          initialDelaySeconds: 300
-          periodSeconds: 300
-          timeoutSeconds: 10
-          failureThreshold: 2
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
       volumes:
         - name: parity-config
           configMap:
