@@ -38,6 +38,7 @@ livenessProbe:
   initialDelaySeconds: 300
   periodSeconds: 300
   timeoutSeconds: 10
+  successThreshold: 1
   failureThreshold: 2
 
 service:
