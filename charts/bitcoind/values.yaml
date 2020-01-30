@@ -79,4 +79,5 @@ livenessProbe:
   initialDelaySeconds: 600
   periodSeconds: 600
   timeoutSeconds: 500
+  successThreshold: 1
   failureThreshold: 2
