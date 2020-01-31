@@ -5,7 +5,7 @@ steps:
       - charts/$_CHART_NAME
     id: 'helm package'
     env:
-      - GCS_PLUGIN_VERSION=0.2.1
+      - GCS_PLUGIN_VERSION=0.2.2
       - HELMFILE_VERSION=v0.85.3
       - HELM_REPO_NAME=$_HELM_REPO_NAME
       - HELM_REPO_URL=$_HELM_REPO_URL
@@ -41,11 +41,9 @@ substitutions:
  _HELM_REPO_URL: gs://blockchain-k8s/charts
  _ARTIFACT_URL: gs://artifacts-/versions/
  _ARTIFACT_FILENAME: bitcoind-chart-version
-
 options:
   env:
-   - CLOUDSDK_COMPUTE_ZONE=us-central1-b
-   - CLOUDSDK_CONTAINER_CLUSTER=baas0
+   - SKIP_CLUSTER_CONFIG=true
 
 artifacts:
   objects:
