@@ -33,6 +33,14 @@ steps:
       - helm gcs push ${_CHART_NAME}-$(cat $_ARTIFACT_FILENAME).tgz $_HELM_REPO_NAME
     id: 'helm push'
 
+# disable caching on repo index, https://github.com/helm/helm/issues/2453#issuecomment-301904742
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - setmeta
+      - -h
+      - "Cache-Control:private, max-age=0, no-transform"
+      - ${_HELM_REPO_URL}/index.yaml
+
 substitutions:
  _REGISTRY: gcr.io
  _ENV: dev
