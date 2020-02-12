@@ -18,4 +18,4 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/blockchain-etl/docker-bitcoind
 - https://github.com/kylemanna/docker-bitcoind
-version: 0.3.52
+version: 0.3.53
