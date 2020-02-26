@@ -16,6 +16,8 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "bitcoind.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       {{- with .Values.securityContext }}
       securityContext:
@@ -64,7 +66,7 @@ spec:
               - /bin/bash
               - /scripts/check_node_health.sh
               - "{{ .Values.bitcoind.base_path }}"
-              - "3600"
+              - "{{ .Values.bitcoind.maxHealthyAge }}"
               - last_synced_block.txt
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}

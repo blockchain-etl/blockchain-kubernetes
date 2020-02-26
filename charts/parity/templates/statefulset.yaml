@@ -18,6 +18,8 @@ spec:
         app.kubernetes.io/name: {{ include "parity.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         parity/chain: {{ .Values.parity.chain }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       {{- with .Values.securityContext }}
       securityContext:

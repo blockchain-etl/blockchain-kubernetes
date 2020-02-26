@@ -10,6 +10,7 @@ metadata:
 {{ include "bitcoind.labels" . | indent 4 }}
   annotations:
     cloud.google.com/load-balancer-type: "Internal"
+    cloud.google.com/network-tier: "PREMIUM"
 spec:
   type: LoadBalancer
   {{ if .Values.internalLBIP }}

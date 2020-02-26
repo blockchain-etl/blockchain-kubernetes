@@ -4,7 +4,7 @@ metadata:
   name: "{{ .Release.Name }}-config"
 data:
   parity.toml: |-
-  {{- include "parity/templates/_parity.toml" . | nindent 4 }}
+  {{- include (print $.Template.BasePath "/_parity.toml") . | nindent 4 }}
 ---
 apiVersion: v1
 kind: ConfigMap

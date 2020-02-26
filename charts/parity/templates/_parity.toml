@@ -18,9 +18,10 @@ warp = false
 min_peers = {{ .Values.parity.network.min_peers }}
 # Parity will maintain at most {{ .Values.parity.network.max_peers }} peers.
 max_peers = {{ .Values.parity.network.max_peers }}
+{{ if .Values.parity.network.bootnodes }}
 #Override the bootnodes from our chain. NODES should be comma-delimited enodes.
 bootnodes = {{ .Values.parity.network.bootnodes | toJson }}
-
+{{ end }}
 [rpc]
 #  JSON-RPC will be listening for connections on IP all.
 interface = "all"
@@ -29,7 +30,8 @@ apis = ["eth", "pubsub", "net", "parity", "private", "parity_pubsub", "traces", 
 # Threads for handling incoming connections for HTTP JSON-RPC server.
 server_threads = 6
 # Turn on additional processing threads for JSON-RPC servers (all transports). Setting this to a non-zero value allows parallel execution of cpu-heavy queries.
-processing_threads = 7
+# removed in 2.7
+#processing_threads = 7
 
 [websockets]
 # UI won't work and WebSockets server will be not available.

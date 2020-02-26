@@ -61,6 +61,8 @@ bitcoind:
   configurationFileName: "bitcoin.conf"
   cli_binary: "bitcoin-cli"
   chain: "btc"
+  # how many seconds should liveness check wait for a new block. Increase with BCH
+  maxHealthyAge: 3600
 
 # Custom bitcoind configuration file used to override default bitcoind settings
 configurationFile:
