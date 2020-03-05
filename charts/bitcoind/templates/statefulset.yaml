@@ -87,10 +87,10 @@ spec:
       # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
       - name: copy-bitcoind-config
         image: busybox
-        command: ['sh', '-c', 'cp /configmap/{{ .Values.bitcoind.configurationFileName }} {{ .Values.bitcoind.base_path }}/{{ .Values.bitcoind.configurationFileName }}']
+        command: ['sh', '-c', 'cp /config/{{ .Values.bitcoind.configurationFileName }} {{ .Values.bitcoind.base_path }}/{{ .Values.bitcoind.configurationFileName }}']
         volumeMounts:
         - name: bitcoind-config
-          mountPath: /configmap
+          mountPath: /config
         - name: bitcoind-pvc
           mountPath: {{ .Values.bitcoind.base_path }}
       {{- end }}
