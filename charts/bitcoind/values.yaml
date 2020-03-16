@@ -4,7 +4,7 @@
 terminationGracePeriodSeconds: 30
 image:
   repository: blockchainetl/bitcoind
-  tag: 0.18.0
+  tag: 0.19.1
   pullPolicy: IfNotPresent
 
 service:
