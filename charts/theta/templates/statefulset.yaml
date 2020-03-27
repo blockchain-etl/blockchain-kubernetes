@@ -102,7 +102,7 @@ spec:
       # copy config
       - name: copy-theta-config
         image: busybox
-        command: ['sh', '-c', 'cp -a  /opt/theta/integration/mainnet/validator {{ .Values.theta.base_path }} && cp /config/{{ .Values.theta.configurationFileName }} {{ .Values.theta.base_path }}/validator/{{ .Values.theta.configurationFileName }}']
+        command: ['sh', '-c', 'cp /config/{{ .Values.theta.configurationFileName }} {{ .Values.theta.base_path }}/validator/{{ .Values.theta.configurationFileName }}']
         volumeMounts:
         - name: theta-config
           mountPath: /config
