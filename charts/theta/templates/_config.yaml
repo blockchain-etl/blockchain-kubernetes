@@ -13,7 +13,11 @@ rpc:
   port: {{ .Values.configurationFile.rpc.port | default "16888" }}
 storage:
   # true by default, when set to true the node will perform state pruning which can effectively reduce the disk space consumption
-  statePruningEnabled: {{ .Values.configurationFile.storage.statePruningEnabled | default "true" }}
+  {{- if .Values.configurationFile.storage.statePruningEnabled }}
+  statePruningEnabled: true
+  {{ else }}
+  statePruningEnabled: false
+  {{- end }}
   # the purning interval (in terms of blocks) which control the frequency the pruning procedure is activated
   statePruningInterval: 16
   # the number of blocks prior to the latest finalized block whose corresponding state tree need to be retained
