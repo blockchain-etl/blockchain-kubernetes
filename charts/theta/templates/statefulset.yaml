@@ -62,8 +62,6 @@ spec:
         volumeMounts:
         - name: theta-pvc
           mountPath: {{ .Values.theta.base_path }}
-        - name: scripts
-          mountPath: /scripts
         livenessProbe:
           exec:
             command:
