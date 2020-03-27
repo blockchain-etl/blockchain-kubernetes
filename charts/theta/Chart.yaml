@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: "1.2.0"
+name: theta
+description: Theta cryptonode
+engine: gotpl
+home: https://www.thetatoken.org
+keywords:
+  - theta
+  - cryptocurrency
+  - blockchain
+maintainers:
+  - email: av@dysnix.com
+    name: voron
+sources:
+  - https://github.com/kubernetes/charts
+  - https://github.com/blockchain-etl/docker-theta
+version: 0.1.0
