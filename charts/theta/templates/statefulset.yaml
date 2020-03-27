@@ -84,11 +84,20 @@ spec:
                 - -c
                 - "kill 1; sleep {{ .Values.terminationGracePeriodSeconds }}"
       initContainers:
+      # copy integration
+      - name: copy-integration
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ['sh', '-c', 'cp -a /opt/theta/integration/mainnet/validator {{ .Values.theta.base_path }}']
+        volumeMounts:
+          - name: theta-pvc
+            mountPath: {{ .Values.theta.base_path }}
+
       {{- if .Values.configurationFile }}
-      # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
+      # copy config
       - name: copy-theta-config
         image: busybox
-        command: ['sh', '-c', 'cp -a /opt/theta/integration/mainnet/validator {{ .Values.theta.base_path }} && cp /config/{{ .Values.theta.configurationFileName }} {{ .Values.theta.base_path }}/validator/{{ .Values.theta.configurationFileName }}']
+        command: ['sh', '-c', 'cp -a  /opt/theta/integration/mainnet/validator {{ .Values.theta.base_path }} && cp /config/{{ .Values.theta.configurationFileName }} {{ .Values.theta.base_path }}/validator/{{ .Values.theta.configurationFileName }}']
         volumeMounts:
         - name: theta-config
           mountPath: /config
