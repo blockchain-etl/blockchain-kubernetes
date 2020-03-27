@@ -7,10 +7,12 @@ p2p:
   seedPeerOnlyOutbound: "true"
   minNumPeers: 5
   maxNumPeers: 10
+
 rpc:
   enabled: true
   address: {{ .Values.configurationFile.rpc.address | default "127.0.0.1" }}
   port: {{ .Values.configurationFile.rpc.port | default "16888" }}
+
 storage:
   # true by default, when set to true the node will perform state pruning which can effectively reduce the disk space consumption
   {{- if .Values.configurationFile.storage.statePruningEnabled }}
@@ -24,3 +26,9 @@ storage:
   statePruningRetainedBlocks: 512
 log:
   levels: "*:info"
+
+sync:
+  messageQueueSize: 512
+
+consensus:
+  messageQueueSize: 512
