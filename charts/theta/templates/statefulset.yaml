@@ -100,12 +100,9 @@ spec:
       volumes:
       {{- if .Values.configurationFile }}
       - name: theta-config
-        secret:
-          secretName: "{{ .Release.Name }}-config"
-      {{- end }}
-      - name: scripts
         configMap:
-          name: "{{ .Release.Name }}-scripts"
+          name: "{{ .Release.Name }}-config"
+      {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: theta-pvc
