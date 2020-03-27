@@ -50,7 +50,7 @@ spec:
         {{- toYaml .Values.securityContext | nindent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["start", "--config", "{{ .Values.theta.base_path }}","--password","$(node_passwd)"]
+        args: ["start", "--config", "{{ .Values.theta.base_path }}/validator/","--password","$(node_passwd)"]
         envFrom:
         - secretRef:
             name: "{{ .Release.Name }}-secret"

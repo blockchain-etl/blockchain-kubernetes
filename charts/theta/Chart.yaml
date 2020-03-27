@@ -14,4 +14,4 @@ maintainers:
 sources:
   - https://github.com/kubernetes/charts
   - https://github.com/blockchain-etl/docker-theta
-version: 0.1.7
+version: 0.1.8
