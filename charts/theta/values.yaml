@@ -6,6 +6,8 @@ terminationGracePeriodSeconds: 30
 theta:
   configurationFileName: config.yaml
   base_path: /theta/mainnet
+  node_passwd: changemeASAP
+
 configurationFile:
   p2p:
     port: "50001"
@@ -30,12 +32,12 @@ service:
   p2pPort: 50001
   p2pPortName: p2p
 
-#externalLB: false
-#externalLBIP: ""
-#externalLBSourceRanges: {}
-##  - 203.0.113.2/32
-##  - 203.0.113.3/32
-#
+externalLB: false
+externalLBIP: ""
+externalLBSourceRanges: {}
+#  - 203.0.113.2/32
+#  - 203.0.113.3/32
+
 #externalLBp2p: false
 internalLB: false
 internalLBIP: ""
