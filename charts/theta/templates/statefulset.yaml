@@ -87,7 +87,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - "kill -SIGINT 1; sleep {{ .Values.terminationGracePeriodSeconds }}"
+                - "kill -s INT 1; sleep {{ .Values.terminationGracePeriodSeconds }}"
       initContainers:
       # copy integration
       - name: copy-integration
