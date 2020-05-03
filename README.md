@@ -12,28 +12,35 @@ Here is quick HOWTO deploy nodes into GKE env.
 * follow "Before you begin" part of [GCP manual](https://cloud.google.com/kubernetes-engine/docs/how-to/iam)
 
 ### Deploy
-* [Create k8s GKE two zone cluster](gke.md), use at least [n1-highmem4 instances](https://cloud.google.com/compute/docs/machine-types#n1_machine_types)
-* [Install](helm.md) [Helm](https://helm.sh)
-* Allocate 2 regional IP adresses, use the same region as your GKE cluster
-```bash 
-export PROJECT_ID=$(gcloud config get-value project)
-export REGION=us-central1
 
-gcloud compute addresses create dev-btc-0 --region $REGION  --project=$PROJECT_ID
-gcloud compute addresses create dev-eth-0 --region $REGION  --project=$PROJECT_ID
-gcloud compute addresses create dev-btc-1 --region $REGION  --project=$PROJECT_ID
-gcloud compute addresses create dev-eth-1 --region $REGION  --project=$PROJECT_ID
+* Create GKE cluster:
 
-gcloud compute addresses list --project=$PROJECT_ID
-```
-* Adjust zones in [regional storage classes](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/regional-pd) `sc-ssd-regional.yaml` and `sc-standard-regional.yaml`, use the same zones as you used with GKE cluster.
-* Create storage classes, replace *K8S_CONTEXT* with real value.
 ```bash
-export K8S_CONTEXT=baas0
-kubectl --context $K8S_CONTEXT create -f sc-ssd.yaml 
-kubectl --context $K8S_CONTEXT create -f sc-ssd-regional.yaml
-kubectl --context $K8S_CONTEXT create -f sc-standard-regional.yaml
-``` 
+gcloud container clusters create baas0 \
+    --preemptible \
+    --num-nodes 1 
+    --enable-autoscaling --max-nodes=1 --min-nodes=1 \
+    --machine-type=n1-highmem-4 \
+    --zone=us-central1-a 
+```
+
+* Init and patch [Helm](https://helm.sh):
+
+```bash
+
+helm init
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+```
+
+
+* Create SSD storage class:
+
+```bash
+kubectl create -f sc-ssd.yaml 
+```
+ 
 * Copy `example-values-parity.yaml` and `example-values-bitcoind.yaml` to `values-parity.yaml` and `values-bitcoind.yaml`
 ```bash
 cp example-values-parity.yaml values-parity.yaml
