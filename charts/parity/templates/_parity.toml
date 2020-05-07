@@ -44,6 +44,10 @@ tracing = "on"
 db_compaction = "{{ .Values.parity.footprint.db_compaction }}"
 # Keep all state trie data. No pruning.
 pruning = "{{ .Values.parity.footprint.archive }}"
+# Will keep up to {{ .Values.parity.footprint.pruning_history }} old state entries.
+pruning_history = {{ .Values.parity.footprint.pruning_history }}
+# Will keep up to {{ .Values.parity.footprint.pruning_memory }} MB old state entries.
+pruning_memory = {{ .Values.parity.footprint.pruning_memory }}
 # Number of threads will vary depending on the workload. Not guaranteed to be faster.
 scale_verifiers = true
 
