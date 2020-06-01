@@ -46,14 +46,14 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{ if and .Values.externalLBp2p .Values.externalLBp2pIP }}
         {{- if .Values.parityCmdOverride }}
         command: "{{ .Values.parityCmd }}"
         {{- end }}
+        {{- if and .Values.externalLBp2p .Values.externalLBp2pIP }}
         args: ["--config=/config/parity.toml","--nat","extip:{{- .Values.externalLBp2pIP -}}"]
-        {{ else }}
+        {{- else }}
         args: ["--config=/config/parity.toml"]
-        {{ end }}
+        {{- end }}
         workingDir: "{{ .Values.parity.base_path }}"
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
