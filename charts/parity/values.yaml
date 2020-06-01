@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-terminationGracePeriodSeconds: 60
+terminationGracePeriodSeconds: 180
 
 image:
   repository: parity/parity
@@ -67,6 +67,9 @@ service:
     - port: *p2pPort1
       name: *p2pPortName1
       protocol: *p2pPortProtocol1
+
+parityCmdOverride: false
+parityCmd: ""
 
 externalLB: false
 externalLBIP: ""
