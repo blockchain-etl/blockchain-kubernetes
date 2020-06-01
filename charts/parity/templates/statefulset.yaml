@@ -47,7 +47,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.parityCmdOverride }}
-        command: "{{ .Values.parityCmd }}"
+        command: [ "{{ .Values.parityCmd }}" ]
         {{- end }}
         {{- if and .Values.externalLBp2p .Values.externalLBp2pIP }}
         args: ["--config=/config/parity.toml","--nat","extip:{{- .Values.externalLBp2pIP -}}"]
