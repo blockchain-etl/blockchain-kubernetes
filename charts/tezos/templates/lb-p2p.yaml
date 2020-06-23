@@ -1,0 +1,22 @@
+{{ if .Values.externalLBp2p }}
+## use this if you want to expose blockchain p2p (not RPC) to public
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-lb-p2p
+  labels:
+    chain: {{ .Values.tezos.chain_id }}
+{{ include "tezos.labels" . | indent 4 }}
+spec:
+  type: LoadBalancer
+  {{ if .Values.configurationFile.externalLBp2pIP -}}
+  loadBalancerIP: {{ .Values.configurationFile.externalLBp2pIP }}
+  {{ end -}}
+  ports:
+    - name: {{ .Values.service.p2pPortName }}
+      port: {{ .Values.service.p2pPort }}
+      targetPort: {{ .Values.service.p2pPortName }}
+  selector:
+    app.kubernetes.io/name: {{ include "tezos.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}

@@ -1,0 +1,14 @@
+tezos RPC can be accessed via port {{ .Values.service.rpcPort }} on the following DNS name from within your cluster:
+{{ template "tezos.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To connect to tezos RPC:
+
+1. Forward the port for the node:
+
+  $ kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ template "tezos.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{ .items[0].metadata.name }") {{ .Values.service.rpcPort }}
+
+2. Test connection:
+
+  $ curl http://127.0.0.1:{{ .Values.service.rpcPort }}/monitor/heads/{{ .Values.tezos.chain_id }}
+
+3. See https://tezos.gitlab.io/developer/rpc.html and https://tezos.gitlab.io/api/rpc.html for details
