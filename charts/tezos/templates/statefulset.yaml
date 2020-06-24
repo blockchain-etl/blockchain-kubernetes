@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "bitcoind.fullname" . }}
+  name: {{ include "tezos.fullname" . }}
   labels:
-{{ include "bitcoind.labels" . | indent 4 }}
+{{ include "tezos.labels" . | indent 4 }}
 spec:
   serviceName: "{{ .Release.Name }}-service"
   replicas: {{ .Values.replicaCount }} # by default is 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "bitcoind.name" . }}
+      app.kubernetes.io/name: {{ include "tezos.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "bitcoind.name" . }}
+        app.kubernetes.io/name: {{ include "tezos.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         checksum/configmap.yaml: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
@@ -45,8 +45,19 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["-datadir={{ .Values.bitcoind.base_path }}"]
-        workingDir: "{{ .Values.bitcoind.base_path }}"
+        envFrom:
+        - secretRef:
+            name: "{{ .Release.Name }}-env"
+{{/*        command:*/}}
+{{/*          - sh*/}}
+{{/*          - -c*/}}
+{{/*          - "sleep 999999999"*/}}
+        args:
+          - tezos-node
+          - --net-addr=:{{ .Values.service.p2pPort }}
+          - --network={{ .Values.tezos.network }}
+          - --history-mode={{ .Values.tezos.history_mode }}
+        workingDir: "/home/tezos"
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
@@ -57,64 +68,43 @@ spec:
           name: "{{ .Values.service.p2pPortName }}"
           protocol: "TCP"
         volumeMounts:
-        - name: bitcoind-pvc
-          mountPath: {{ .Values.bitcoind.base_path }}
+        - name: tezos-pvc
+          mountPath: {{ .Values.tezos.base_path }}
         - name: scripts
           mountPath: /scripts
         livenessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - /scripts/check_node_health.sh
-              - "{{ .Values.bitcoind.base_path }}"
-              - "{{ .Values.bitcoind.maxHealthyAge }}"
+              - "{{ .Values.tezos.base_path }}"
+              - "{{ .Values.tezos.maxHealthyAge }}"
               - last_synced_block.txt
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-        lifecycle:
-          preStop:
-            exec:
-              # we don't need to poll some resources, as we stop PID 1, just sleep after stop command to tell k8s - "shutdown is in process"
-              command:
-                - /bin/sh
-                - -c
-                - "{{ .Values.bitcoind.cli_binary }} -datadir={{ .Values.bitcoind.base_path }} stop; sleep {{ .Values.terminationGracePeriodSeconds }}"
       initContainers:
-      {{- if .Values.configurationFile }}
-      # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
-      - name: copy-bitcoind-config
-        image: busybox
-        command: ['sh', '-c', 'cp /config/{{ .Values.bitcoind.configurationFileName }} {{ .Values.bitcoind.base_path }}/{{ .Values.bitcoind.configurationFileName }}']
-        volumeMounts:
-        - name: bitcoind-config
-          mountPath: /config
-        - name: bitcoind-pvc
-          mountPath: {{ .Values.bitcoind.base_path }}
-      {{- end }}
-      {{- if .Values.zcash_fetch_params }}
-      - name: zcash-fetch-params
+      {{- if .Values.tezos_upgrade_storage }}
+      - name: tezos-upgrade-storage
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ['zcash-fetch-params']
+        envFrom:
+        - secretRef:
+            name: "{{ .Release.Name }}-env"
+        args: ['tezos-upgrade-storage']
         volumeMounts:
-          - name: bitcoind-pvc
-            mountPath: "/home/zcash"
+          - name: tezos-pvc
+            mountPath: {{ .Values.tezos.base_path }}
       {{- end }}
       volumes:
-      {{- if .Values.configurationFile }}
-      - name: bitcoind-config
-        secret:
-          secretName: "{{ .Release.Name }}-config"
-      {{- end }}
       - name: scripts
         configMap:
           name: "{{ .Release.Name }}-scripts"
   volumeClaimTemplates:
   - metadata:
-      name: bitcoind-pvc
+      name: tezos-pvc
     spec:
       accessModes:
         - {{.Values.persistence.accessMode }}

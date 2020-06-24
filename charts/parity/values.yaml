@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-terminationGracePeriodSeconds: 60
+terminationGracePeriodSeconds: 180
 
 image:
   repository: parity/parity
@@ -25,7 +25,10 @@ parity:
     cache_size_queue: 200
     cache_size_state: 250
     cache_size: 6144
-    db_compaction: ssd
+    db_compaction: "ssd"
+    pruning: "archive"
+    pruning_history: 64
+    pruning_memory: 32
   network:
     min_peers: 250
     max_peers: 300
@@ -64,6 +67,9 @@ service:
     - port: *p2pPort1
       name: *p2pPortName1
       protocol: *p2pPortProtocol1
+
+parityCmdOverride: false
+parityCmd: ""
 
 externalLB: false
 externalLBIP: ""

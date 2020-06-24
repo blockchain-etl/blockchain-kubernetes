@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "bitcoind.fullname" . }}
+  name: {{ include "theta.fullname" . }}
   labels:
-{{ include "bitcoind.labels" . | indent 4 }}
+{{ include "theta.labels" . | indent 4 }}
 spec:
   serviceName: "{{ .Release.Name }}-service"
   replicas: {{ .Values.replicaCount }} # by default is 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "bitcoind.name" . }}
+      app.kubernetes.io/name: {{ include "theta.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "bitcoind.name" . }}
+        app.kubernetes.io/name: {{ include "theta.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         checksum/configmap.yaml: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
@@ -41,12 +41,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      serviceAccountName: {{ template "theta.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: {{ .Chart.Name }}
+        securityContext:
+        {{- toYaml .Values.securityContext | nindent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["-datadir={{ .Values.bitcoind.base_path }}"]
-        workingDir: "{{ .Values.bitcoind.base_path }}"
+        args: ["start", "--config", "{{ .Values.theta.base_path }}/validator/","--password","$(node_passwd)"]
+        envFrom:
+        - secretRef:
+            name: "{{ .Release.Name }}-secret"
+        workingDir: "{{ .Values.theta.base_path }}"
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
@@ -57,17 +65,15 @@ spec:
           name: "{{ .Values.service.p2pPortName }}"
           protocol: "TCP"
         volumeMounts:
-        - name: bitcoind-pvc
-          mountPath: {{ .Values.bitcoind.base_path }}
-        - name: scripts
-          mountPath: /scripts
+        - name: theta-pvc
+          mountPath: {{ .Values.theta.base_path }}
         livenessProbe:
           exec:
             command:
               - /bin/bash
               - /scripts/check_node_health.sh
-              - "{{ .Values.bitcoind.base_path }}"
-              - "{{ .Values.bitcoind.maxHealthyAge }}"
+              - "{{ .Values.theta.base_path }}"
+              - "{{ .Values.theta.maxHealthyAge }}"
               - last_synced_block.txt
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -81,40 +87,37 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - "{{ .Values.bitcoind.cli_binary }} -datadir={{ .Values.bitcoind.base_path }} stop; sleep {{ .Values.terminationGracePeriodSeconds }}"
+                - "kill -s INT 1; sleep {{ .Values.terminationGracePeriodSeconds }}"
       initContainers:
-      {{- if .Values.configurationFile }}
-      # we keep this useless copy to be able to customize config at runtime, such as update rpc creds from other sources
-      - name: copy-bitcoind-config
-        image: busybox
-        command: ['sh', '-c', 'cp /config/{{ .Values.bitcoind.configurationFileName }} {{ .Values.bitcoind.base_path }}/{{ .Values.bitcoind.configurationFileName }}']
-        volumeMounts:
-        - name: bitcoind-config
-          mountPath: /config
-        - name: bitcoind-pvc
-          mountPath: {{ .Values.bitcoind.base_path }}
-      {{- end }}
-      {{- if .Values.zcash_fetch_params }}
-      - name: zcash-fetch-params
+      # copy integration
+      - name: copy-integration
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ['zcash-fetch-params']
+        command: ['sh', '-c', 'cp -a /opt/theta/integration/mainnet/validator {{ .Values.theta.base_path }}']
         volumeMounts:
-          - name: bitcoind-pvc
-            mountPath: "/home/zcash"
+          - name: theta-pvc
+            mountPath: {{ .Values.theta.base_path }}
+
+      {{- if .Values.configurationFile }}
+      # copy config
+      - name: copy-theta-config
+        image: busybox
+        command: ['sh', '-c', 'cp /config/{{ .Values.theta.configurationFileName }} {{ .Values.theta.base_path }}/validator/{{ .Values.theta.configurationFileName }}']
+        volumeMounts:
+        - name: theta-config
+          mountPath: /config
+        - name: theta-pvc
+          mountPath: {{ .Values.theta.base_path }}
       {{- end }}
       volumes:
       {{- if .Values.configurationFile }}
-      - name: bitcoind-config
-        secret:
-          secretName: "{{ .Release.Name }}-config"
-      {{- end }}
-      - name: scripts
+      - name: theta-config
         configMap:
-          name: "{{ .Release.Name }}-scripts"
+          name: "{{ .Release.Name }}-config"
+      {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: bitcoind-pvc
+      name: theta-pvc
     spec:
       accessModes:
         - {{.Values.persistence.accessMode }}

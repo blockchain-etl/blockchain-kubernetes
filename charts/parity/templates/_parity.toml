@@ -43,7 +43,11 @@ tracing = "on"
 # Database compaction type. TYPE may be one of: ssd - suitable for SSDs and fast HDDs; hdd - suitable for slow HDDs; auto - determine automatically. (default: auto)
 db_compaction = "{{ .Values.parity.footprint.db_compaction }}"
 # Keep all state trie data. No pruning.
-pruning = "archive"
+pruning = "{{ .Values.parity.footprint.pruning }}"
+# Will keep up to {{ .Values.parity.footprint.pruning_history }} old state entries.
+pruning_history = {{ .Values.parity.footprint.pruning_history }}
+# Will keep up to {{ .Values.parity.footprint.pruning_memory }} MB old state entries.
+pruning_memory = {{ .Values.parity.footprint.pruning_memory }}
 # Number of threads will vary depending on the workload. Not guaranteed to be faster.
 scale_verifiers = true
 

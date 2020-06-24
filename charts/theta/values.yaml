@@ -1,0 +1,135 @@
+# Default values for theta.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+terminationGracePeriodSeconds: 30
+
+theta:
+  configurationFileName: config.yaml
+  base_path: /theta/mainnet
+  node_passwd: changemeASAP
+
+configurationFile:
+  p2p:
+    port: "50001"
+    seeds: "18.217.234.19:21000,3.16.9.73:21000,18.223.85.230:21000,18.216.45.28:21000,18.191.140.202:21000"
+  rpc:
+    port: "16888"
+    address: "127.0.0.1"
+  storage:
+    # we need all the data
+    statePruningEnabled: false
+
+replicaCount: 1
+
+image:
+  repository: blockchainetl/theta
+  tag: 1.2.0
+  pullPolicy: IfNotPresent
+
+service:
+  rpcPortName: rpc
+  rpcPort: 16888
+  p2pPort: 50001
+  p2pPortName: p2p
+
+externalLB: false
+externalLBIP: ""
+externalLBSourceRanges: {}
+#  - 203.0.113.2/32
+#  - 203.0.113.3/32
+
+#externalLBp2p: false
+internalLB: false
+internalLBIP: ""
+
+persistence:
+  enabled: true
+  #  storageClass: "default"
+  accessMode: ReadWriteOnce
+  size: "500Gi"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1000Mi"
+  limits:
+    cpu: "3000m"
+    memory: "2000Mi"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+
+#podSecurityContext: {}
+  # fsGroup: 2000
+
+#securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+livenessProbe:
+  # effectively disable check
+  initialDelaySeconds: "1000000000"
+  periodSeconds: 600
+  timeoutSeconds: 500
+  successThreshold: 1
+  failureThreshold: 2
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+#resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

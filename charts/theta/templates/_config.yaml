@@ -1,0 +1,34 @@
+# Theta configuration
+# https://github.com/thetatoken/theta-protocol-ledger/blob/master/common/config.go
+p2p:
+  port: {{ .Values.configurationFile.p2p.port | default "50001" }}
+  seeds: {{ .Values.configurationFile.p2p.seeds | default "" }}
+  opt: 0
+  seedPeerOnlyOutbound: "true"
+  minNumPeers: 5
+  maxNumPeers: 10
+
+rpc:
+  enabled: true
+  address: {{ .Values.configurationFile.rpc.address | default "127.0.0.1" }}
+  port: {{ .Values.configurationFile.rpc.port | default "16888" }}
+
+storage:
+  # true by default, when set to true the node will perform state pruning which can effectively reduce the disk space consumption
+  {{- if .Values.configurationFile.storage.statePruningEnabled }}
+  statePruningEnabled: true
+  {{ else }}
+  statePruningEnabled: false
+  {{- end }}
+  # the purning interval (in terms of blocks) which control the frequency the pruning procedure is activated
+  statePruningInterval: 16
+  # the number of blocks prior to the latest finalized block whose corresponding state tree need to be retained
+  statePruningRetainedBlocks: 512
+log:
+  levels: "*:info"
+
+sync:
+  messageQueueSize: 512
+
+consensus:
+  messageQueueSize: 512
