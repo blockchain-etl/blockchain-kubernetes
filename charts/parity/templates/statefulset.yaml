@@ -73,7 +73,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - /scripts/check_node_health.sh
             - http://127.0.0.1:{{ .Values.service.rpcPort }}
             - "300"

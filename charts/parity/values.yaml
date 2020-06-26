@@ -8,7 +8,7 @@ terminationGracePeriodSeconds: 180
 
 image:
   repository: parity/parity
-  tag: v2.5.13-stable
+  tag: v2.7.2-stable
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
