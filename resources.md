@@ -15,7 +15,7 @@ Parity version 2.5/2.6 loves memory. And it absolutely loves low disk latency, w
 Simple IOPS increase may not help, as disk access is more or less single-threaded during sync and thus may be limited by IO latency instead of IOPS.
 Local NVMe disk will do it's job for chains like ETC, but it's size is not enough to work with ETH mainnet usually. 
 Here is some hack to speedup initial sync - get instance with tons of RAM and preload synced blockchain into OS cache. 
-My case was 640GB of RAM and blockchain preload from inside container via `find | xargs cat > /dev/null` or [vmtouch](https://github.com/hoytech/vmtouch/), 
+My case was 640GB of RAM and blockchain preload from inside container via `find -type f| xargs cat > /dev/null` or [vmtouch](https://github.com/hoytech/vmtouch/), 
 3-5x speedup from 0.5-2 blocks/sec(100-200 tx/sec) to 7-10 blocks/sec (700-1000 tx/sec) and sustained blockchain write near 150MB/s, just $1/hour with preemptible nodes.  
 Get pre-synced snapshot when you can :)
 
@@ -76,3 +76,17 @@ TBD
 | Chain | CPU req/lim | Memory req/lim | Disk size | Disk IOPS | Disk latency|
 |-------|-------------|----------------|-----------|-----------|-------------|
 |mainnet|0|0|0|0|-|
+
+## Thezos
+You may use [pre-synced snapshot](https://tezos.stackexchange.com/questions/1385/available-snapshots-for-main-net) to bootstrap Your node. But here are resources requirements to sync from scratch.
+### Initial sync
+| Chain | CPU req/lim | Memory req/lim | Disk size | Disk IOPS | Disk latency|
+|-------|-------------|----------------|-----------|-----------|-------------|
+|mainnet|1.5/2.2|4G/6G|50GB SSD|1200+|low|
+
+### Keep chain synced
+TBD
+
+| Chain | CPU req/lim | Memory req/lim | Disk size | Disk IOPS | Disk latency|
+|-------|-------------|----------------|-----------|-----------|-------------|
+|mainnet|0.1/1|2G/3G|50GB HDD|30+|medium|
