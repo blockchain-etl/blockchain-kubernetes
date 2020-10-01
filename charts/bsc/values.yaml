@@ -1,4 +1,4 @@
-# Default values for parity.
+# Default values for bsc.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,35 +7,33 @@ replicaCount: 1
 terminationGracePeriodSeconds: 180
 
 image:
-  repository: parity/parity
-  tag: v2.7.2-stable
-  pullPolicy: IfNotPresent
+  repository: dysnix/bsc
+  tag: latest
+  pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# enable this only once - when your blockchain is empty. It overwrites everything
+init_genesis: false
+
 # Don't use spaces or special chars
-parity:
-  chain: "mainnet"
+bsc:
+  # we don't have other chains, it's just a pod label for now
+  chain: testnet
+  #  Blockchain sync mode ("fast", "full", or "light") (default: fast)
+  syncmode: "full"
+  # Blockchain garbage collection mode ("full", "archive") (default: "full")
+  gcmode: "archive"
   base_path: "/data"
-  footprint:
-    cache_size_db: 4096
-    cache_size_blocks: 200
-    cache_size_queue: 200
-    cache_size_state: 250
-    cache_size: 6144
-    db_compaction: "ssd"
-    pruning: "archive"
-    pruning_history: 64
-    pruning_memory: 32
-  network:
-    min_peers: 250
-    max_peers: 300
-    # f.e. ["enode://...@203.0.113.1:30303","enode://...@203.0.113.2:30304", "enode://...@203.0.113.3:30304"]
-    bootnodes: []
-  misc:
-    logging: info
+  rpcApi: "eth,net,web3,txpool,parlia"
+  rpcVhosts: "*"
+  wsApi: "net,web3,eth"
+  wsOrigins: "*"
+  graphQlVhosts: "*"
+  maxpeers: 50
+  cache: 4096
 
 livenessProbe:
   initialDelaySeconds: 300
@@ -47,13 +45,15 @@ livenessProbe:
 service:
   type: ClusterIP
   rpcPortName: &rpcPortName jsonrpc
-  rpcPort: &rpcPort 8545
-  wsPort: &wsPort 8546
+  rpcPort: &rpcPort 8575
+  wsPort: &wsPort 8576
   wsPortName: &wsPortName web-socket
-  p2pPort0: &p2pPort0 30303
+  graphQlPort: &graphQlPort 8577
+  graphQlPortName: &graphQlPortName qraphql
+  p2pPort0: &p2pPort0 30311
   p2pPortName0: &p2pPortName0 p2p
   p2pPortProtocol0: &p2pPortProtocol0 TCP
-  p2pPort1: &p2pPort1 30303
+  p2pPort1: &p2pPort1 30311
   p2pPortName1: &p2pPortName1 p2p-discovery
   p2pPortProtocol1: &p2pPortProtocol1 UDP
   ports:
@@ -61,6 +61,8 @@ service:
       name: *rpcPortName
     - port: *wsPort
       name: *wsPortName
+    - port: *graphQlPort
+      name: *graphQlPortName
     - port: *p2pPort0
       name: *p2pPortName0
       protocol: *p2pPortProtocol0
@@ -68,8 +70,8 @@ service:
       name: *p2pPortName1
       protocol: *p2pPortProtocol1
 
-parityCmdOverride: false
-parityCmd: ""
+bscCmdOverride: false
+bscCmd: ""
 
 externalLB: false
 externalLBIP: ""
@@ -90,7 +92,7 @@ persistence:
   enabled: true
 #  storageClass: "standard"
   accessMode: ReadWriteOnce
-  size: "100Gi"
+  size: "10Gi"
 
 
 ingress:
@@ -109,11 +111,11 @@ ingress:
 
 resources:
   requests:
-    cpu: "2800m"
-    memory: "10000Mi"
+    cpu: "1000m"
+    memory: "2000Mi"
   limits:
     cpu: "3000m"
-    memory: "12000Mi"
+    memory: "5000Mi"
 
 securityContext:
   runAsUser: 1000
@@ -132,8 +134,8 @@ affinity:
         podAffinityTerm:
           labelSelector:
             matchLabels:
-              app.kubernetes.io/name: "parity"
-              parity/chain: "mainnet"
+              app.kubernetes.io/name: "bsc"
+              bsc/chain: "testnet"
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
 

@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 1.0.0
+description: binancechain is building the Internet of Trusted Things, an open network where all physical and virtual “things” —
+  humans, machines, and businesses — can interact with full trust and privacy.
+engine: gotpl
+home: https://binancechain.io
+keywords:
+- binancechain
+- cryptocurrency
+maintainers:
+- email: av@dysnix.com
+  name: voron
+name: binancechain
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/binancechainproject/binancechain-core/
+version: 0.1.0

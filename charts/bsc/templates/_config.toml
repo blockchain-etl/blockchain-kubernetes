@@ -1,0 +1,91 @@
+[Eth]
+NetworkId = 96
+SyncMode = "full"
+DiscoveryURLs = []
+NoPruning = false
+NoPrefetch = false
+LightPeers = 100
+UltraLightFraction = 75
+DatabaseCache = 512
+DatabaseFreezer = ""
+TrieCleanCache = 256
+TrieDirtyCache = 256
+TrieTimeout = 3600000000000
+EnablePreimageRecording = false
+EWASMInterpreter = ""
+EVMInterpreter = ""
+
+[Eth.Miner]
+GasFloor = 30000000
+GasCeil = 40000000
+GasPrice = 18000000000
+Recommit = 10000000000
+Noverify = false
+
+[Eth.Ethash]
+CacheDir = ""
+CachesInMem = 0
+CachesOnDisk = 0
+CachesLockMmap = false
+DatasetDir = ""
+DatasetsInMem = 0
+DatasetsOnDisk = 0
+DatasetsLockMmap = false
+PowMode = 0
+
+[Eth.TxPool]
+Locals = []
+NoLocals = true
+Journal = "transactions.rlp"
+Rejournal = 3600000000000
+PriceLimit = 18000000000
+PriceBump = 10
+AccountSlots = 16
+GlobalSlots = 4096
+AccountQueue = 64
+GlobalQueue = 1024
+Lifetime = 10800000000000
+
+[Eth.GPO]
+Blocks = 20
+Percentile = 60
+
+[Shh]
+MaxMessageSize = 1048576
+RestrictConnectionBetweenLightClients = true
+
+[Node]
+DataDir = "node"
+omitempty = ""
+InsecureUnlockAllowed = false
+NoUSB = true
+IPCPath = "geth.ipc"
+# it overrides cli arg
+#HTTPHost = "0.0.0.0"
+HTTPPort = 8575
+HTTPVirtualHosts = ["*"]
+HTTPModules = ["eth", "net", "web3", "txpool", "parlia"]
+WSPort = 8576
+WSModules = ["net", "web3", "eth"]
+GraphQLPort = 8577
+GraphQLVirtualHosts = ["*"]
+
+[Node.P2P]
+MaxPeers = 50
+NoDiscovery = false
+BootstrapNodes = ["enode://29647b99b82a88c6c975bfd003eba61af5f5c19a0c6aafb4a9fc58555a30481e73a613b46e55c6ad717ad94a4ccfe1d1dd63cf2943b82565b45f7dcbe5aa77a0@52.199.214.252:30311","enode://2ac0d0479a91adb6227d914e2d5fb327465d1500c2d08488ff53c31be537c4b1b4f87634745c25a30cceaba44485463d4bae22ccf276de4b722b413a2296c91e@18.181.52.189:30311","enode://689641bba38fcf8d2f1aa33a82ea4f3a8f678b3cbbd1bfedd21f0df20b86ea64d90085084239e6ffdfe68e441726ca674a9af26deb66d40eb9456ca692b2f17c@52.51.80.128:30311","enode://a83769032be75aa38a53771234140432e4ca54986d1cee75c92ad760ab67668b43b0f60d9e86fe646c3a1a53543c6721b627877deda3bb1c2f12b779d2487ccc@34.242.33.165:30311","enode://3cbb7c7dd6d0c9400b3cbfd70876c27e08df352f0b5c32ee396eb68ce44ccc43eed004b91f5862458598fa7a123bb913f5e0b77eca93f9314565fa26e5c384db@3.209.122.123:30311","enode://13c9d1bee5bcef2401023a4fa2028497e1063f1137800322ce3d5c5c5d2f004e1157600767567f0e504b1e8ef29e589831e8916b9a3c3f9c798f3e6c076915e6@52.72.123.113:30311"]
+StaticNodes = []
+TrustedNodes = ["enode://29647b99b82a88c6c975bfd003eba61af5f5c19a0c6aafb4a9fc58555a30481e73a613b46e55c6ad717ad94a4ccfe1d1dd63cf2943b82565b45f7dcbe5aa77a0@52.199.214.252:30311","enode://2ac0d0479a91adb6227d914e2d5fb327465d1500c2d08488ff53c31be537c4b1b4f87634745c25a30cceaba44485463d4bae22ccf276de4b722b413a2296c91e@18.181.52.189:30311","enode://689641bba38fcf8d2f1aa33a82ea4f3a8f678b3cbbd1bfedd21f0df20b86ea64d90085084239e6ffdfe68e441726ca674a9af26deb66d40eb9456ca692b2f17c@52.51.80.128:30311","enode://a83769032be75aa38a53771234140432e4ca54986d1cee75c92ad760ab67668b43b0f60d9e86fe646c3a1a53543c6721b627877deda3bb1c2f12b779d2487ccc@34.242.33.165:30311","enode://3cbb7c7dd6d0c9400b3cbfd70876c27e08df352f0b5c32ee396eb68ce44ccc43eed004b91f5862458598fa7a123bb913f5e0b77eca93f9314565fa26e5c384db@3.209.122.123:30311","enode://13c9d1bee5bcef2401023a4fa2028497e1063f1137800322ce3d5c5c5d2f004e1157600767567f0e504b1e8ef29e589831e8916b9a3c3f9c798f3e6c076915e6@52.72.123.113:30311"]
+ListenAddr = ":30311"
+EnableMsgEvents = false
+
+[Node.HTTPTimeouts]
+ReadTimeout = 30000000000
+WriteTimeout = 30000000000
+IdleTimeout = 120000000000
+
+[Node.LogConfig]
+FileRoot = ""
+FilePath = "bsc.log"
+MaxBytesSize = 10485760
+Level = "info"

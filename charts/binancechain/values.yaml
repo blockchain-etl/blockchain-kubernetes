@@ -1,0 +1,83 @@
+# Default values for binancechain.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+terminationGracePeriodSeconds: 30
+image:
+  repository: dysnix/node-binary
+  tag: fix-dockerfile
+  pullPolicy: Always
+
+service:
+  rpcPortName: jsonrpc
+  rpcPort: "27147"
+  p2pPort: "27146"
+  p2pPortName: p2p
+
+externalLB: false
+externalLBIP: ""
+externalLBSourceRanges: {}
+#  - 203.0.113.2/32
+#  - 203.0.113.3/32
+
+externalLBp2p: false
+externalLBp2pIP: ""
+internalLB: false
+internalLBIP: ""
+
+persistence:
+  enabled: true
+#  storageClass: "default"
+  accessMode: ReadWriteOnce
+  size: "500Gi"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "8200Mi"
+  limits:
+    cpu: "6000m"
+    memory: "10000Mi"
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: "binancechain"
+          topologyKey: failure-domain.beta.kubernetes.io/zone
+
+binancechain:
+  base_path: "/opt/bnbchaind"
+  config_path: "config"
+  configurationFileName: "config.toml"
+  appFileName: "app.toml"
+  # prod/testnet
+  network: "prod"
+  # how many seconds should liveness check wait for a new block.
+  maxHealthyAge: 3600
+  config:
+    enable_state_sync: false
+    state_sync_height: -1
+    # we don't disable fast sync
+    #enable_fast_sync: true
+
+
+# enable this to run binancechain-get-genesis as init container
+binancechain_copy_config: true
+
+livenessProbe:
+  initialDelaySeconds: 600
+  periodSeconds: 600
+  timeoutSeconds: 500
+  successThreshold: 1
+  failureThreshold: 2

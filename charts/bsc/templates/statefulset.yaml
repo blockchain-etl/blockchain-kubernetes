@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "parity.fullname" . }}
+  name: {{ include "bsc.fullname" . }}
   labels:
-{{ include "parity.labels" . | indent 4 }}
+{{ include "bsc.labels" . | indent 4 }}
 spec:
   serviceName: "{{ .Release.Name }}-service"
   replicas: {{ .Values.replicaCount }} # by default is 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "parity.name" . }}
+      app.kubernetes.io/name: {{ include "bsc.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      parity/chain: {{ .Values.parity.chain }}
+      bsc/chain: {{ .Values.bsc.chain }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "parity.name" . }}
+        app.kubernetes.io/name: {{ include "bsc.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        parity/chain: {{ .Values.parity.chain }}
+        bsc/chain: {{ .Values.bsc.chain }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
@@ -46,15 +46,35 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if .Values.parityCmdOverride }}
-        command: [ "{{ .Values.parityCmd }}" ]
+        {{- if .Values.bscCmdOverride }}
+        command: [ "{{ .Values.bscCmd }}" ]
         {{- end }}
-        {{- if and .Values.externalLBp2p .Values.externalLBp2pIP }}
-        args: ["--config=/config/parity.toml","--nat","extip:{{- .Values.externalLBp2pIP -}}"]
-        {{- else }}
-        args: ["--config=/config/parity.toml"]
-        {{- end }}
-        workingDir: "{{ .Values.parity.base_path }}"
+        args:
+          - --config=/config/config.toml
+          - --datadir={{ .Values.bsc.base_path }}
+          - --syncmode={{ .Values.bsc.syncmode }}
+          - --gcmode={{ .Values.bsc.gcmode }}
+          - --rpc
+          - --rpcaddr=0.0.0.0
+          - --rpcport={{ .Values.service.rpcPort }}
+          - --rpcapi="{{ .Values.bsc.rpcApi }}"
+          - --rpcvhosts="{{ .Values.bsc.rpcVhosts }}"
+          - --ws
+          - --wsaddr=0.0.0.0
+          - --wsport={{ .Values.service.wsPort }}
+          - --wsapi="{{ .Values.bsc.wsApi }}"
+          - --wsorigins="{{ .Values.bsc.wsOrigins }}"
+          - --graphql
+          - --graphql.addr=0.0.0.0
+          - --graphql.port={{ .Values.service.graphQlPort }}
+          - --graphql.vhosts="{{ .Values.bsc.graphQlVhosts }}"
+          - --maxpeers={{ .Values.bsc.maxpeers }}
+          - --cache={{ .Values.bsc.cache }}
+          - --port={{ .Values.service.p2pPort0 }}
+          {{- if and .Values.externalLBp2p .Values.externalLBp2pIP }}
+          - --nat=extip:{{- .Values.externalLBp2pIP -}}
+          {{- end }}
+        workingDir: "{{ .Values.bsc.base_path }}"
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         ports:
@@ -64,12 +84,12 @@ spec:
           protocol: {{ $val.protocol | default "TCP" }}
           {{- end }}
         volumeMounts:
-        - name: parity-config
+        - name: bsc-config
           mountPath: /config
         - name: scripts
           mountPath: /scripts
-        - name: parity-pvc
-          mountPath: /data
+        - name: bsc-pvc
+          mountPath: {{ .Values.bsc.base_path }}
         livenessProbe:
           exec:
             command:
@@ -83,8 +103,29 @@ spec:
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+      - name: logger
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: [ "tail","-F","{{ .Values.bsc.base_path }}/bsc.log" ]
+        workingDir: "{{ .Values.bsc.base_path }}"
+        volumeMounts:
+          - name: bsc-pvc
+            mountPath: {{ .Values.bsc.base_path }}
+            readOnly: true
+      initContainers:
+      {{- if .Values.init_genesis }}
+      - name: init
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh", "-c", "wget -O /tmp/genesis.json
+        https://github.com/binance-chain/smart-chain-binary/raw/master/bsc/fullnode/config/genesis.json &&
+        geth --datadir={{ .Values.bsc.base_path }} init /tmp/genesis.json"]
+        volumeMounts:
+          - name: bsc-pvc
+            mountPath: {{ .Values.bsc.base_path }}
+      {{- end }}
       volumes:
-        - name: parity-config
+        - name: bsc-config
           configMap:
             name: "{{ .Release.Name }}-config"
         - name: scripts
@@ -92,7 +133,7 @@ spec:
             name: "{{ .Release.Name }}-scripts"
   volumeClaimTemplates:
     - metadata:
-        name: parity-pvc
+        name: bsc-pvc
       spec:
         accessModes:
         - {{.Values.persistence.accessMode }}
