@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the binancechain chart 
 
 Parameter                 	 	| Description                        				| Default
 ------------------------------- | ------------------------------------------------- | ----------------------------------------------------------
-`image.repository`         		| Image source repository name       				| `arilot/docker-binancechain`
+`image.repository`         		| Image source repository name       				| `dysnix/docker-binancechain`
 `image.tag`                		| `binancechain` release tag.            				| `0.17.1`
 `image.pullPolicy`         		| Image pull policy                  				| `IfNotPresent`
 `service.rpcPort`          		| RPC port                           				| `8732`
